@@ -2,11 +2,17 @@
 #include <stdlib.h>
 #include "bintree.h"
 
-Bintree bintree_create(size_t key_size)
+static int bintree_compare_mem(void *v1, void *v2, Bintree *tree)
+{
+	return memcmp(v1, v2, tree->key_size);
+}
+
+Bintree bintree_create(size_t key_size, BintreeComparator cmp)
 {
 	return (Bintree) {
 		.root = NULL,
 		.key_size = key_size,
+		.cmp = cmp ? cmp : &bintree_compare_mem,
 	};
 }
 
@@ -15,7 +21,7 @@ static BintreeNode **search_recursive(Bintree *tree, BintreeNode **nodeptr, void
 	if (*nodeptr) {
 		int cond;
 
-		if ((cond = memcmp((*nodeptr)->key, key, tree->key_size)) == 0)
+		if ((cond = tree->cmp((*nodeptr)->key, key, tree)) == 0)
 			return nodeptr;
 		else if (cond > 0)
 			return search_recursive(tree, &(*nodeptr)->left, key);
