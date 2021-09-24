@@ -22,17 +22,17 @@ Bintree bintree_create(size_t key_size, BintreeComparator cmp)
 	};
 }
 
-static BintreeNode **search_recursive(Bintree *tree, BintreeNode **nodeptr, void *key)
+static BintreeNode **search_recursive(Bintree *tree, BintreeNode **nodeptr, void *key, bool return_existing)
 {
 	if (*nodeptr) {
 		int cond;
 
-		if ((cond = tree->cmp((*nodeptr)->key, key, tree)) == 0)
+		if ((cond = tree->cmp((*nodeptr)->key, key, tree)) == 0 && return_existing)
 			return nodeptr;
 		else if (cond > 0)
-			return search_recursive(tree, &(*nodeptr)->left, key);
+			return search_recursive(tree, &(*nodeptr)->left, key, return_existing);
 		else
-			return search_recursive(tree, &(*nodeptr)->right, key);
+			return search_recursive(tree, &(*nodeptr)->right, key, return_existing);
 	} else {
 		return nodeptr;
 	}
@@ -40,7 +40,7 @@ static BintreeNode **search_recursive(Bintree *tree, BintreeNode **nodeptr, void
 
 BintreeNode **bintree_search(Bintree *tree, void *key)
 {
-	return search_recursive(tree, &tree->root, key);
+	return search_recursive(tree, &tree->root, key, true);
 }
 
 void bintree_add_node(Bintree *tree, BintreeNode **nodeptr, void *key, void *value)
@@ -50,6 +50,11 @@ void bintree_add_node(Bintree *tree, BintreeNode **nodeptr, void *key, void *val
 	memcpy((*nodeptr)->key, key, tree->key_size);
 	(*nodeptr)->value = value;
 	(*nodeptr)->left = (*nodeptr)->right = NULL;
+}
+
+void bintree_insert(Bintree *tree, void *key, void *value)
+{
+	bintree_add_node(tree, search_recursive(tree, &tree->root, key, false), key, value);
 }
 
 static void bintree_free(BintreeNode *node, void *arg)

@@ -33,6 +33,7 @@ typedef enum
 Bintree bintree_create(size_t key_size, BintreeComparator cmp);
 BintreeNode **bintree_search(Bintree *tree, void *key);
 void bintree_add_node(Bintree *tree, BintreeNode **nodeptr, void *key, void *value);
+void bintree_insert(Bintree *tree, void *key, void *value);
 void bintree_traverse(Bintree *tree, BintreeTraversion traversion, BintreeTraversionFunction func, void *arg);
 void bintree_clear(Bintree *tree, BintreeTraversionFunction func, void *arg);
 
