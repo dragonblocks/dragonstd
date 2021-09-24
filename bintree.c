@@ -2,6 +2,12 @@
 #include <stdlib.h>
 #include "bintree.h"
 
+typedef struct
+{
+	BintreeTraversionFunction func;
+	void *arg;
+} BintreeFreeData;
+
 static int bintree_compare_mem(void *v1, void *v2, Bintree *tree)
 {
 	return memcmp(v1, v2, tree->key_size);
@@ -46,22 +52,49 @@ void bintree_add_node(Bintree *tree, BintreeNode **nodeptr, void *key, void *val
 	(*nodeptr)->left = (*nodeptr)->right = NULL;
 }
 
-static void free_recursive(BintreeNode *node, BintreeFreeFunction func, void *arg)
+static void bintree_free(BintreeNode *node, void *arg)
 {
-	if (node) {
-		free_recursive(node->left, func, arg);
-		free_recursive(node->right, func, arg);
-		free(node->key);
-		if (func)
-			func(node->value, arg);
-		free(node);
+	BintreeFreeData *fdata = arg;
+
+	if (fdata->func)
+		fdata->func(node, fdata->arg);
+
+	free(node->key);
+	free(node);
+}
+
+void bintree_clear(Bintree *tree, BintreeTraversionFunction func, void *arg)
+{
+	if (tree) {
+		BintreeFreeData fdata = {
+			.func = func,
+			.arg = arg,
+		};
+
+		bintree_traverse(tree, BTT_POSTORDER, &bintree_free, &fdata);
+		tree->root = NULL;
 	}
 }
 
-void bintree_clear(Bintree *tree, BintreeFreeFunction func, void *arg)
+static void traverse_recursive(BintreeNode *node, BintreeTraversion traversion, BintreeTraversionFunction func, void *arg)
 {
-	if (tree) {
-		free_recursive(tree->root, func, arg);
-		tree->root = NULL;
+	if (node) {
+		if (traversion == BTT_PREORDER)
+			func(node, arg);
+
+		traverse_recursive(node->left, traversion, func, arg);
+
+		if (traversion == BTT_INORDER)
+			func(node, arg);
+
+		traverse_recursive(node->right, traversion, func, arg);
+
+		if (traversion == BTT_POSTORDER)
+			func(node, arg);
 	}
+}
+
+void bintree_traverse(Bintree *tree, BintreeTraversion traversion, BintreeTraversionFunction func, void *arg)
+{
+	traverse_recursive(tree->root, traversion, func, arg);
 }

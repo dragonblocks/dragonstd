@@ -5,9 +5,6 @@
 
 struct Bintree;
 
-typedef int (*BintreeComparator)(void *v1, void *v2, struct Bintree *tree);
-typedef void (*BintreeFreeFunction)(void *value, void *arg);
-
 typedef struct BintreeNode
 {
 	void *key;
@@ -16,6 +13,9 @@ typedef struct BintreeNode
 	struct BintreeNode *right;
 } BintreeNode;
 
+typedef int (*BintreeComparator)(void *v1, void *v2, struct Bintree *tree);
+typedef void (*BintreeTraversionFunction)(BintreeNode *node, void *arg);
+
 typedef struct Bintree
 {
 	BintreeNode *root;
@@ -23,9 +23,17 @@ typedef struct Bintree
 	BintreeComparator cmp;
 } Bintree;
 
+typedef enum
+{
+	BTT_PREORDER,
+	BTT_INORDER,
+	BTT_POSTORDER,
+} BintreeTraversion;
+
 Bintree bintree_create(size_t key_size, BintreeComparator cmp);
 BintreeNode **bintree_search(Bintree *tree, void *key);
 void bintree_add_node(Bintree *tree, BintreeNode **nodeptr, void *key, void *value);
-void bintree_clear(Bintree *tree, BintreeFreeFunction func, void *arg);
+void bintree_traverse(Bintree *tree, BintreeTraversion traversion, BintreeTraversionFunction func, void *arg);
+void bintree_clear(Bintree *tree, BintreeTraversionFunction func, void *arg);
 
 #endif
