@@ -76,6 +76,28 @@ bool read_full(int fd, char *buffer, size_t size)
 	v3 ## type v3 ## type ## _add(v3 ## type a, v3 ## type b) \
 	{ \
 		return (v3 ## type) {a.x + b.x, a.y + b.y, a.z + b.z}; \
+	} \
+	bool read_v4 ## type(int fd, v4 ## type *ptr) \
+	{ \
+		READVEC(type, 4) \
+		ptr->x = buf[0]; \
+		ptr->y = buf[1]; \
+		ptr->z = buf[2]; \
+		ptr->w = buf[3]; \
+		return true; \
+	} \
+	bool write_v4 ## type(int fd, v4 ## type val) \
+	{ \
+		type vec[4] = {val.x, val.y, val.z, val.w}; \
+		WRITEVEC(type, 4) \
+	} \
+	bool v4 ## type ## _equals(v4 ## type a, v4 ## type b) \
+	{ \
+		return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w; \
+	} \
+	v4 ## type v4 ## type ## _add(v4 ## type a, v4 ## type b) \
+	{ \
+		return (v4 ## type) {a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w}; \
 	}
 
 #define DEFTYP(type, bits) \
