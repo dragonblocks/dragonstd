@@ -8,5 +8,5 @@ To use this in your project, just compile the implementation.c file into your pr
 
 ## endian.h
 By default, dragontype will use the Linux <endian.h> header. However, since other systems may not have that header,
-you can use [this library](https://github.com/mikepb/endian.h) to replaced. Make sure to define DRAGONTYPE_ENDIAN_HEADER
+you can use [this library](https://github.com/mikepb/endian.h) to replace it. Make sure to define DRAGONTYPE_ENDIAN_HEADER
 to the include path of this portable endian.h file.
