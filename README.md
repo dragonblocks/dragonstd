@@ -5,3 +5,8 @@ This library is only capable of what dragonblocks needs, and it does not intend 
 
 Included are Array, Bintree, List and Queue as well as numeric types and (de-)serialisation for them.
 To use this in your project, just compile the implementation.c file into your project's binary.
+
+## endian.h
+By default, dragontype will use the Linux <endian.h> header. However, since other systems may not have that header,
+you can use [this library](https://github.com/mikepb/endian.h) to replaced. Make sure to define DRAGONTYPE_ENDIAN_HEADER
+to the include path of this portable endian.h file.
