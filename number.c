@@ -1,10 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
-#ifdef DRAGONTYPE_ENDIAN_HEADER
-#include DRAGONTYPE_ENDIAN_HEADER
-#else
-#include <endian.h>
-#endif
+#include <endian.h/endian.h>
 #include <poll.h>
 #include "number.h"
 
