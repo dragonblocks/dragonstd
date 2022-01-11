@@ -1,7 +1,9 @@
 #ifndef _DRAGONTYPE_ARRAY_H_
 #define _DRAGONTYPE_ARRAY_H_
 
+#ifndef DRAGONTYPE_ARRAY_REALLOC_EXTRA
 #define DRAGONTYPE_ARRAY_REALLOC_EXTRA 25
+#endif
 
 #include <stddef.h>
 #include <stdbool.h>
