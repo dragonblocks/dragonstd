@@ -144,7 +144,23 @@ DEFTYPES(64)
 		} \
 		return true; \
 	} \
-	DEFVEC(type)
+	DEFVEC(type) \
+	type type ## _mix(type a, type b, type f) \
+	{ \
+		return (1.0 - f) * a + b * f; \
+	} \
+	v2 ## type v2 ## type ## _mix(v2 ## type a, v2 ## type b, type f) \
+	{ \
+		return (v2 ## type) {type ## _mix(a.x, b.x, f), type ## _mix(a.y, b.y, f)}; \
+	} \
+	v3 ## type v3 ## type ## _mix(v3 ## type a, v3 ## type b, type f) \
+	{ \
+		return (v3 ## type) {type ## _mix(a.x, b.x, f), type ## _mix(a.y, b.y, f), type ## _mix(a.z, b.z, f)}; \
+	} \
+	v4 ## type v4 ## type ## _mix(v4 ## type a, v4 ## type b, type f) \
+	{ \
+		return (v4 ## type) {type ## _mix(a.x, b.x, f), type ## _mix(a.y, b.y, f), type ## _mix(a.z, b.z, f), type ## _mix(a.w, b.w, f)}; \
+	}
 
 DEFFLOAT(f32)
 DEFFLOAT(f64)

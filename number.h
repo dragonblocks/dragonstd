@@ -40,6 +40,12 @@ bool read_full(int fd, char *buffer, size_t size);
 	DEFTYP(int ## bits ## _t, s ## bits) \
 	DEFTYP(uint ## bits ## _t, u ## bits)
 
+#define DEFMIX(bits) \
+	f ## bits f ## bits ## _mix(f ## bits a, f ## bits b, f ## bits f); \
+	v2f ## bits v2f ## bits ## _mix(v2f ## bits a, v2f ## bits b, f ## bits f); \
+	v3f ## bits v3f ## bits ## _mix(v3f ## bits a, v3f ## bits b, f ## bits f); \
+	v4f ## bits v4f ## bits ## _mix(v4f ## bits a, v4f ## bits b, f ## bits f);
+
 DEFTYPES(8)
 DEFTYPES(16)
 DEFTYPES(32)
@@ -50,6 +56,9 @@ typedef double f64;
 
 DEFTYP(float, f32)
 DEFTYP(double, f64)
+
+DEFMIX(32)
+DEFMIX(64)
 
 #undef DEFRW
 #undef DEFBOX
