@@ -3,67 +3,57 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include <stddef.h>
 
-bool read_full(int fd, char *buffer, size_t size);
+#define DEFINE_CLAMP(type) \
+	type type ## _clamp(type v, type min, type max);
 
-#define DEFRW(type) \
-	bool read_ ## type(int fd, type *ptr); \
-	bool write_ ## type(int fd, type val);
+#define DEFINE_MIX(scalar, type) \
+	type type ## _mix(type a, type b, scalar f);
 
-#define DEFBOX(type) \
-	typedef struct {v ## type min; v ## type max;} aabb ## type;
+#define DEFINE_VECTOR(scalar, vector, box) vector; \
+	typedef struct {vector min; vector max;} box; \
+	bool   vector ## _equals(vector a, vector b); \
+	vector vector ## _add(vector a, vector b); \
+	vector vector ## _clamp(vector v, vector min, vector max); \
+	DEFINE_CLAMP(vector)
 
-#define DEFVEC(type) \
-	typedef struct {type x, y;} v2 ## type; \
-	DEFRW(v2 ## type) \
-	DEFBOX(2 ## type) \
-	bool v2 ## type ## _equals(v2 ## type a, v2 ## type b); \
-	v2 ## type v2 ## type ## _add(v2 ## type a, v2 ## type b); \
-	typedef struct {type x, y, z;} v3 ## type; \
-	DEFRW(v3 ## type) \
-	DEFBOX(3 ## type) \
-	bool v3 ## type ## _equals(v3 ## type a, v3 ## type b); \
-	v3 ## type v3 ## type ## _add(v3 ## type a, v3 ## type b); \
-	typedef struct {type x, y, z, w;} v4 ## type; \
-	DEFRW(v4 ## type) \
-	DEFBOX(4 ## type) \
-	bool v4 ## type ## _equals(v4 ## type a, v4 ## type b); \
-	v4 ## type v4 ## type ## _add(v4 ## type a, v4 ## type b);
+#define DEFINE_VECTORS(scalar) \
+	typedef struct {scalar x, y      ;} DEFINE_VECTOR(scalar, v2 ## scalar, aabb2 ## scalar) \
+	typedef struct {scalar x, y, z   ;} DEFINE_VECTOR(scalar, v3 ## scalar, aabb3 ## scalar) \
+	typedef struct {scalar x, y, z, w;} DEFINE_VECTOR(scalar, v4 ## scalar, aabb4 ## scalar)
 
-#define DEFTYP(from, to) \
-	typedef from to; \
-	DEFRW(to) \
-	DEFVEC(to)
+#define DEFINE_SCALAR(scalar, origin) \
+	typedef origin scalar; \
+	scalar scalar ## _max(scalar a, scalar b); \
+	scalar scalar ## _min(scalar a, scalar b); \
+	DEFINE_CLAMP(scalar) \
+	DEFINE_VECTORS(scalar)
 
-#define DEFTYPES(bits) \
-	DEFTYP(int ## bits ## _t, s ## bits) \
-	DEFTYP(uint ## bits ## _t, u ## bits)
+#define DEFINE_INTEGER(bits) \
+	DEFINE_SCALAR(s ## bits,  int ## bits ## _t) \
+	DEFINE_SCALAR(u ## bits, uint ## bits ## _t)
 
-#define DEFMIX(bits) \
-	f ## bits f ## bits ## _mix(f ## bits a, f ## bits b, f ## bits f); \
-	v2f ## bits v2f ## bits ## _mix(v2f ## bits a, v2f ## bits b, f ## bits f); \
-	v3f ## bits v3f ## bits ## _mix(v3f ## bits a, v3f ## bits b, f ## bits f); \
-	v4f ## bits v4f ## bits ## _mix(v4f ## bits a, v4f ## bits b, f ## bits f);
+#define DEFINE_FLOAT(type, origin) \
+	DEFINE_SCALAR(type, origin) \
+	DEFINE_MIX(type, type) \
+	DEFINE_MIX(type, v2 ## type) \
+	DEFINE_MIX(type, v3 ## type) \
+	DEFINE_MIX(type, v4 ## type)
 
-DEFTYPES(8)
-DEFTYPES(16)
-DEFTYPES(32)
-DEFTYPES(64)
+DEFINE_INTEGER(8)
+DEFINE_INTEGER(16)
+DEFINE_INTEGER(32)
+DEFINE_INTEGER(64)
 
-typedef float f32;
-typedef double f64;
+DEFINE_FLOAT(f32, float)
+DEFINE_FLOAT(f64, double)
 
-DEFTYP(float, f32)
-DEFTYP(double, f64)
-
-DEFMIX(32)
-DEFMIX(64)
-
-#undef DEFRW
-#undef DEFBOX
-#undef DEFVEC
-#undef DEFTYP
-#undef DEFTYPES
+#undef DEFINE_CLAMP
+#undef DEFINE_MIX
+#undef DEFINE_VECTOR
+#undef DEFINE_VECTORS
+#undef DEFINE_SCALAR
+#undef DEFINE_INTEGER
+#undef DEFINE_FLOAT
 
 #endif

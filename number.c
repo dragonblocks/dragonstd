@@ -1,166 +1,95 @@
-#include <stdio.h>
-#include <unistd.h>
-#include <endian.h/endian.h>
-#include <poll.h>
 #include "number.h"
 
-bool read_full(int fd, char *buffer, size_t size)
-{
-	size_t n_read_total = 0;
-	int n_read;
-	while (n_read_total < size) {
-		if ((n_read = read(fd, buffer + n_read_total, size - n_read_total)) == -1) {
-			perror("read");
-			return false;
-		}
-		n_read_total += n_read;
-	}
-	return true;
-}
-
-#define htobe8(x) x
-#define be8toh(x) x
-
-#define READVEC(type, n) \
-	type buf[n]; \
-	for (int i = 0; i < n; i++) { \
-		if (! read_ ## type(fd, &buf[i])) \
-			return false; \
+#define DEFINE_CLAMP(scalar) \
+	scalar scalar ## _clamp(scalar v, scalar min, scalar max) \
+	{ \
+		return v < min ? min : v > max ? max : v; \
 	}
 
-#define WRITEVEC(type, n) \
-	for (int i = 0; i < n; i++) { \
-		if (! write_ ## type(fd, vec[i])) \
-			return false; \
-	} \
-	return true;
-
-#define DEFVEC(type) \
-	bool read_v2 ## type(int fd, v2 ## type *ptr) \
-	{ \
-		READVEC(type, 2) \
-		ptr->x = buf[0]; \
-		ptr->y = buf[1]; \
-		return true; \
-	} \
-	bool write_v2 ## type(int fd, v2 ## type val) \
-	{ \
-		type vec[2] = {val.x, val.y}; \
-		WRITEVEC(type, 2) \
-	} \
-	bool v2 ## type ## _equals(v2 ## type a, v2 ## type b) \
+#define DEFINE_VECTOR2(vector, clamp) \
+	bool vector ## _equals(vector a, vector b) \
 	{ \
 		return a.x == b.x && a.y == b.y; \
 	} \
-	v2 ## type v2 ## type ## _add(v2 ## type a, v2 ## type b) \
+	vector vector ## _add(vector a, vector b) \
 	{ \
-		return (v2 ## type) {a.x + b.x, a.y + b.y}; \
+		return (vector) {a.x + b.x, a.y + b.y}; \
 	} \
-	bool read_v3 ## type(int fd, v3 ## type *ptr) \
+	vector vector ## _clamp(vector v, vector min, vector max) \
 	{ \
-		READVEC(type, 3) \
-		ptr->x = buf[0]; \
-		ptr->y = buf[1]; \
-		ptr->z = buf[2]; \
-		return true; \
-	} \
-	bool write_v3 ## type(int fd, v3 ## type val) \
-	{ \
-		type vec[3] = {val.x, val.y, val.z}; \
-		WRITEVEC(type, 3) \
-	} \
-	bool v3 ## type ## _equals(v3 ## type a, v3 ## type b) \
+		return (vector) {clamp(v.x, min.x, max.x), clamp(v.y, min.y, max.y)}; \
+	}
+
+#define DEFINE_VECTOR3(vector, clamp) \
+	bool vector ## _equals(vector a, vector b) \
 	{ \
 		return a.x == b.x && a.y == b.y && a.z == b.z; \
 	} \
-	v3 ## type v3 ## type ## _add(v3 ## type a, v3 ## type b) \
+	vector vector ## _add(vector a, vector b) \
 	{ \
-		return (v3 ## type) {a.x + b.x, a.y + b.y, a.z + b.z}; \
+		return (vector) {a.x + b.x, a.y + b.y, a.z + b.z}; \
 	} \
-	bool read_v4 ## type(int fd, v4 ## type *ptr) \
+	vector vector ## _clamp(vector v, vector min, vector max) \
 	{ \
-		READVEC(type, 4) \
-		ptr->x = buf[0]; \
-		ptr->y = buf[1]; \
-		ptr->z = buf[2]; \
-		ptr->w = buf[3]; \
-		return true; \
-	} \
-	bool write_v4 ## type(int fd, v4 ## type val) \
-	{ \
-		type vec[4] = {val.x, val.y, val.z, val.w}; \
-		WRITEVEC(type, 4) \
-	} \
-	bool v4 ## type ## _equals(v4 ## type a, v4 ## type b) \
-	{ \
-		return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w; \
-	} \
-	v4 ## type v4 ## type ## _add(v4 ## type a, v4 ## type b) \
-	{ \
-		return (v4 ## type) {a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w}; \
+		return (vector) {clamp(v.x, min.x, max.x), clamp(v.y, min.y, max.y), clamp(v.z, min.z, max.z)}; \
 	}
 
-#define DEFTYP(type, bits) \
-	bool read_ ## type(int fd, type *buf) \
+#define DEFINE_VECTOR4(vector, clamp) \
+	bool vector ## _equals(vector a, vector b) \
 	{ \
-		u ## bits encoded; \
-		if (! read_full(fd, (char *) &encoded, sizeof(type))) \
-			return false; \
-		*buf = be ## bits ## toh(encoded); \
-		return true; \
+		return a.x == b.x && a.y == b.y && a.z == b.z  && a.w == b.w; \
 	} \
-	bool write_ ## type(int fd, type val) \
+	vector vector ## _add(vector a, vector b) \
 	{ \
-		u ## bits encoded = htobe ## bits(val); \
-		if (write(fd, &encoded, sizeof(encoded)) == -1) { \
-			perror("write"); \
-			return false; \
-		} \
-		return true; \
+		return (vector) {a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w}; \
 	} \
-	DEFVEC(type)
+	vector vector ## _clamp(vector v, vector min, vector max) \
+	{ \
+		return (vector) {clamp(v.x, min.x, max.x), clamp(v.y, min.y, max.y), clamp(v.z, min.z, max.z), clamp(v.w, min.w, max.w)}; \
+	}
 
-#define DEFTYPES(bits) \
-	DEFTYP(s ## bits, bits) \
-	DEFTYP(u ## bits, bits)
+#define DEFINE_SCALAR(scalar) \
+	DEFINE_CLAMP(scalar) \
+	DEFINE_VECTOR2(v2 ## scalar, scalar ## _clamp) \
+	DEFINE_VECTOR3(v3 ## scalar, scalar ## _clamp) \
+	DEFINE_VECTOR4(v4 ## scalar, scalar ## _clamp)
 
-DEFTYPES(8)
-DEFTYPES(16)
-DEFTYPES(32)
-DEFTYPES(64)
+#define DEFINE_INTEGER(bits) \
+	DEFINE_SCALAR(s ## bits) \
+	DEFINE_SCALAR(u ## bits)
 
-#define DEFFLOAT(type) \
-	bool read_ ## type(int fd, type *buf) \
+#define DEFINE_MIX_VECTOR2(vector, scalar, mix) \
+	vector vector ## _mix(vector a, vector b, scalar f) \
 	{ \
-		if (! read_full(fd, (char *) buf, sizeof(type))) \
-			return false; \
-		return true; \
-	} \
-	bool write_ ## type(int fd, type val) \
+		return (vector) {mix(a.x, b.x, f), mix(a.y, b.y, f)}; \
+	}
+
+#define DEFINE_MIX_VECTOR3(vector, scalar, mix) \
+	vector vector ## _mix(vector a, vector b, scalar f) \
 	{ \
-		if (write(fd, &val, sizeof(val)) == -1) { \
-			perror("write"); \
-			return false; \
-		} \
-		return true; \
-	} \
-	DEFVEC(type) \
+		return (vector) {mix(a.x, b.x, f), mix(a.y, b.y, f), mix(a.z, b.z, f)}; \
+	}
+
+#define DEFINE_MIX_VECTOR4(vector, scalar, mix) \
+	vector vector ## _mix(vector a, vector b, scalar f) \
+	{ \
+		return (vector) {mix(a.x, b.x, f), mix(a.y, b.y, f), mix(a.z, b.z, f), mix(a.w, b.w, f)}; \
+	}
+
+#define DEFINE_FLOAT(type) \
+	DEFINE_SCALAR(type) \
 	type type ## _mix(type a, type b, type f) \
 	{ \
 		return (1.0 - f) * a + b * f; \
 	} \
-	v2 ## type v2 ## type ## _mix(v2 ## type a, v2 ## type b, type f) \
-	{ \
-		return (v2 ## type) {type ## _mix(a.x, b.x, f), type ## _mix(a.y, b.y, f)}; \
-	} \
-	v3 ## type v3 ## type ## _mix(v3 ## type a, v3 ## type b, type f) \
-	{ \
-		return (v3 ## type) {type ## _mix(a.x, b.x, f), type ## _mix(a.y, b.y, f), type ## _mix(a.z, b.z, f)}; \
-	} \
-	v4 ## type v4 ## type ## _mix(v4 ## type a, v4 ## type b, type f) \
-	{ \
-		return (v4 ## type) {type ## _mix(a.x, b.x, f), type ## _mix(a.y, b.y, f), type ## _mix(a.z, b.z, f), type ## _mix(a.w, b.w, f)}; \
-	}
+	DEFINE_MIX_VECTOR2(v2 ## type, type, type ## _mix) \
+	DEFINE_MIX_VECTOR3(v3 ## type, type, type ## _mix) \
+	DEFINE_MIX_VECTOR4(v4 ## type, type, type ## _mix)
 
-DEFFLOAT(f32)
-DEFFLOAT(f64)
+DEFINE_INTEGER(8)
+DEFINE_INTEGER(16)
+DEFINE_INTEGER(32)
+DEFINE_INTEGER(64)
+
+DEFINE_FLOAT(f32)
+DEFINE_FLOAT(f64)
