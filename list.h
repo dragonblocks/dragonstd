@@ -1,5 +1,5 @@
-#ifndef _DRAGONTYPE_LIST_H_
-#define _DRAGONTYPE_LIST_H_
+#ifndef _DRAGONSTD_LIST_H_
+#define _DRAGONSTD_LIST_H_
 
 #include <stdbool.h>
 

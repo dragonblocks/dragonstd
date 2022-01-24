@@ -1,5 +1,5 @@
-#ifndef _DRAGONTYPE_QUEUE_H_
-#define _DRAGONTYPE_QUEUE_H_
+#ifndef _DRAGONSTD_QUEUE_H_
+#define _DRAGONSTD_QUEUE_H_
 
 #include <pthread.h>
 #include "list.h"

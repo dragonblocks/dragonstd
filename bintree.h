@@ -1,5 +1,5 @@
-#ifndef _DRAGONTYPE_BINTREE_H_
-#define _DRAGONTYPE_BINTREE_H_
+#ifndef _DRAGONSTD_BINTREE_H_
+#define _DRAGONSTD_BINTREE_H_
 
 #include <stddef.h>
 

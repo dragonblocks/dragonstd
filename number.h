@@ -1,5 +1,5 @@
-#ifndef _DRAGONTYPE_NUMBER_H_
-#define _DRAGONTYPE_NUMBER_H_
+#ifndef _DRAGONSTD_NUMBER_H_
+#define _DRAGONSTD_NUMBER_H_
 
 #include <stdint.h>
 #include <stdbool.h>
