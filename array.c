@@ -16,7 +16,7 @@ Array array_create(size_t membsiz)
 static void array_realloc(Array *array)
 {
 	if (array->siz > array->cap) {
-		array->cap = array->siz + DRAGONTYPE_ARRAY_REALLOC_EXTRA;
+		array->cap = array->siz + DRAGONSTD_ARRAY_REALLOC_EXTRA;
 		array->ptr = realloc(array->ptr, array->cap * array->membsiz);
 	}
 }
