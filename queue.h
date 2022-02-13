@@ -9,6 +9,7 @@
 typedef struct
 {
 	atomic_bool cancel;
+	bool finish;
 	List list;
 	pthread_cond_t cv;
 	pthread_mutex_t mtx;
@@ -19,6 +20,7 @@ void queue_delete(Queue *queue);
 void queue_enqueue(Queue *queue, void *elem);
 void *queue_dequeue(Queue *queue);
 void *queue_dequeue_callback(Queue *queue, void (*callback)(void *elem));
-void queue_cancel(Queue *queue);
+void queue_cancel(Queue *queue); // disallow dequeing
+void queue_finish(Queue *queue); // disallow enqueing, wait until consumption finished
 
 #endif

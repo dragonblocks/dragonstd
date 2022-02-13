@@ -5,6 +5,7 @@
 Queue *queue_create()
 {
 	Queue *queue = malloc(sizeof(Queue));
+	queue->finish = false;
 	queue->cancel = false;
 	queue->list = list_create(NULL);
 	pthread_cond_init(&queue->cv, NULL);
@@ -23,12 +24,14 @@ void queue_delete(Queue *queue)
 void queue_enqueue(Queue *queue, void *elem)
 {
 	pthread_mutex_lock(&queue->mtx);
-	list_put(&queue->list, elem, NULL);
-	pthread_cond_signal(&queue->cv);
+	if (! queue->finish) {
+		list_put(&queue->list, elem, NULL);
+		pthread_cond_signal(&queue->cv);
+	}
 	pthread_mutex_unlock(&queue->mtx);
 }
 
-void *dequeue(Queue *queue)
+void *queue_dequeue(Queue *queue)
 {
 	return queue_dequeue_callback(queue, NULL);
 }
@@ -66,4 +69,22 @@ void queue_cancel(Queue *queue)
 	pthread_mutex_lock(&queue->mtx);
 	pthread_cond_broadcast(&queue->cv);
 	pthread_mutex_unlock(&queue->mtx);
+}
+
+void queue_finish(Queue *queue)
+{
+	pthread_mutex_lock(&queue->mtx);
+	queue->finish = true;
+	pthread_mutex_unlock(&queue->mtx);
+
+	while (true) {
+		pthread_mutex_lock(&queue->mtx);
+		ListPair *first = queue->list.first;
+		pthread_mutex_unlock(&queue->mtx);
+
+		if (first)
+			sched_yield();
+		else
+			break;
+	}
 }
