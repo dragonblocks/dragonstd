@@ -1,12 +1,11 @@
-#include <string.h> // for memmove, memcpy
 #include <stdlib.h> // for malloc, realloc, free, qsort
+#include <string.h> // for memmove, memcpy
 #include "array.h"
 
-void array_ini(Array *array, size_t mbs, size_t ext, ArrayComparator cmp)
+void array_ini(Array *array, size_t mbs, size_t ext)
 {
 	array->mbs = mbs;
 	array->ext = ext;
-	array->cmp = cmp;
 	array->siz = 0;
 	array->cap = 0;
 	array->ptr = NULL;
@@ -65,7 +64,7 @@ void array_cpy(Array *array, void **ptr, size_t *n)
 
 void array_cln(Array *dst, Array *src)
 {
-	array_ini(dst, src->mbs, src->ext, src->cmp);
+	array_ini(dst, src->mbs, src->ext);
 	array_cpy(src, &dst->ptr, &dst->siz);
 	dst->cap = dst->siz;
 }
@@ -75,18 +74,19 @@ void array_rcy(Array *array)
 	array->siz = 0;
 }
 
-void array_del(Array *array)
+void array_clr(Array *array)
 {
 	if (array->ptr)
 		free(array->ptr);
+	array_ini(array, array->mbs, array->ext);
 }
 
-void array_srt(Array *array)
+void array_srt(Array *array, Comparator cmp)
 {
-	qsort(array->ptr, array->siz, array->mbs, array->cmp);
+	qsort(array->ptr, array->siz, array->mbs, cmp);
 }
 
-ssize_t array_fnd(Array *array, const void *ptr, size_t *idx)
+ssize_t array_fnd(Array *array, const void *ptr, size_t *idx, Comparator cmp)
 {
 	size_t low, high, mid;
 
@@ -96,13 +96,13 @@ ssize_t array_fnd(Array *array, const void *ptr, size_t *idx)
 	while (low < high) {
 		mid = (low + high) / 2;
 
-		int cmp = array->cmp(ptr, array->ptr + mid * array->mbs);
+		int rel = cmp(ptr, array->ptr + mid * array->mbs);
 
-		if (cmp == 0)
+		if (rel == 0)
 			return idx ? (*idx = mid) : mid;
-		else if (cmp < 0)
+		else if (rel < 0)
 			high = mid;
-		else // (cmp > 0)
+		else // (rel > 0)
 			low = mid + 1;
 	}
 
@@ -112,11 +112,11 @@ ssize_t array_fnd(Array *array, const void *ptr, size_t *idx)
 	return -1;
 }
 
-size_t array_ins(Array *array, const void *ptr)
+size_t array_ins(Array *array, const void *ptr, Comparator cmp)
 {
 	size_t n;
 
-	array_fnd(array, ptr, &n);
+	array_fnd(array, ptr, &n, cmp);
 	array_put(array, ptr, n);
 
 	return n;

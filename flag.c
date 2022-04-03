@@ -1,34 +1,30 @@
-#include <stdlib.h>
 #include "flag.h"
 
-Flag *flag_create()
+void flag_ini(Flag *flag)
 {
-	Flag *flag = malloc(sizeof *flag);
-	flag->done = false;
-	pthread_cond_init(&flag->cv, NULL);
+	flag->set = false;
+	pthread_cond_init(&flag->cnd, NULL);
 	pthread_mutex_init(&flag->mtx, NULL);
-	return flag;
 }
 
-void flag_delete(Flag *flag)
+void flag_dst(Flag *flag)
 {
-	pthread_cond_destroy(&flag->cv);	
+	pthread_cond_destroy(&flag->cnd);
 	pthread_mutex_destroy(&flag->mtx);
-	free(flag);
-}
-
-void flag_wait(Flag *flag)
-{
-	pthread_mutex_lock(&flag->mtx);
-	if (! flag->done)
-		pthread_cond_wait(&flag->cv, &flag->mtx);
-	pthread_mutex_unlock(&flag->mtx);
 }
 
 void flag_set(Flag *flag)
 {
 	pthread_mutex_lock(&flag->mtx);
-	flag->done = true;
-	pthread_cond_broadcast(&flag->cv);
+	flag->set = true;
+	pthread_cond_broadcast(&flag->cnd);
+	pthread_mutex_unlock(&flag->mtx);
+}
+
+void flag_slp(Flag *flag)
+{
+	pthread_mutex_lock(&flag->mtx);
+	if (! flag->set)
+		pthread_cond_wait(&flag->cnd, &flag->mtx);
 	pthread_mutex_unlock(&flag->mtx);
 }

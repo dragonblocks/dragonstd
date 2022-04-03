@@ -1,100 +1,72 @@
-#include <stdlib.h>
-#include <string.h>
+#include <stdlib.h> // for malloc, free
+#include <string.h> // for strcmp
+#include "bits/wrappers.h"
 #include "list.h"
 
-bool list_compare_default(void *v1, void *v2)
+#define ITER_REFS node = &list->fst; *node != NULL; node = &(*node)->nxt
+
+void list_ini(List *list)
 {
-	return v1 == v2;
+	list->fst = NULL;
+	list->end = &list->fst;
 }
 
-bool list_compare_string(void *v1, void *v2)
+WRAP_NODE_FUNCTIONS(List, list_)
+
+void list_apd(List *list, void *dat)
 {
-	return strcmp(v1, v2) == 0;
+	list_nmk(list, list->end, dat);
 }
 
-List list_create(ListComparator cmp)
+ListNode **list_nfd(List *list, void *key, Comparator cmp)
 {
-	return (List) {
-		.cmp = cmp ? cmp : list_compare_default,
-		.first = NULL,
-	};
+	ListNode **node;
+
+	for (ITER_REFS)
+		if (cmp((*node)->dat, key) == 0)
+			return node;
+
+	return node;
 }
 
-void list_clear(List *list)
+void list_nmk(List *list, ListNode **node, void *dat)
 {
-	list_clear_func(list, NULL, NULL);
+	*node = malloc(sizeof **node);
+	(*node)->dat = dat;
+	(*node)->nxt = NULL;
+
+	if (list->end == node)
+		list->end = &(*node)->nxt;
 }
 
-void list_clear_func(List *list, void (*func)(void *key, void *value, void *arg), void *arg)
+void list_nrm(List *list, ListNode **node)
 {
-	for (ListPair *pair = list->first; pair != NULL;) {
-		ListPair *next = pair->next;
+	ListNode *old = *node;
+	*node = old->nxt;
+
+	if (list->end == &old->nxt)
+		list->end = node;
+
+	free(old);
+}
+
+void list_itr(List *list, Iterator func, void *arg)
+{
+	LIST_ITERATE(list, node)
+		func(node->dat, arg);
+}
+
+void list_clr(List *list, Iterator func, void *arg)
+{
+	for (ListNode *node = list->fst; node != NULL;) {
+		ListNode *next = node->nxt;
+
 		if (func)
-			func(pair->key, pair->value, arg);
-		free(pair);
-		pair = next;
+			func(node->dat, arg);
+
+		free(node);
+		node = next;
 	}
-	list->first = NULL;
-}
 
-static ListPair *make_pair(void *key, void *value)
-{
-	ListPair *pair = malloc(sizeof(ListPair));
-	pair->key = key;
-	pair->value = value;
-	pair->next = NULL;
-	return pair;
-}
-
-bool list_put(List *list, void *key, void *value)
-{
-	ListPair **pairptr;
-	for (pairptr = &list->first; *pairptr != NULL; pairptr = &(*pairptr)->next) {
-		if (list->cmp((*pairptr)->key, key))
-			return false;
-	}
-	*pairptr = make_pair(key, value);
-	return true;
-}
-
-void *list_get_cached(List *list, void *key, void *(*provider)(void *key))
-{
-	ListPair **pairptr;
-	for (pairptr = &list->first; *pairptr != NULL; pairptr = &(*pairptr)->next) {
-		if (list->cmp((*pairptr)->key, key))
-			return (*pairptr)->value;
-	}
-	return (*pairptr = make_pair(key, provider(key)))->value;
-}
-
-void list_set(List *list, void *key, void *value)
-{
-	ListPair **pairptr;
-	for (pairptr = &list->first; *pairptr != NULL; pairptr = &(*pairptr)->next) {
-		if (list->cmp((*pairptr)->key, key))
-			break;
-	}
-	*pairptr = make_pair(key, value);
-}
-
-void *list_delete(List *list, void *key)
-{
-	for (ListPair **pairptr = &list->first; *pairptr != NULL; pairptr = &(*pairptr)->next) {
-		if (list->cmp((*pairptr)->key, key)) {
-			ListPair *pair = *pairptr;
-			void *value = (*pairptr)->value;
-			*pairptr = pair->next;
-			free(pair);
-			return value;
-		}
-	}
-	return NULL;
-}
-
-void *list_get(List *list, void *key)
-{
-	for (ListPair *pair = list->first; pair != NULL; pair = pair->next)
-		if (list->cmp(pair->key, key))
-			return pair->value;
-	return NULL;
+	list_ini(list);
 }

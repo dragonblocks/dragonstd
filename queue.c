@@ -1,88 +1,82 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include <sched.h>
 #include "queue.h"
 
-Queue *queue_create()
+void queue_ini(Queue *queue)
 {
-	Queue *queue = malloc(sizeof(Queue));
-	queue->finish = false;
-	queue->cancel = false;
-	queue->list = list_create(NULL);
-	pthread_cond_init(&queue->cv, NULL);
+	list_ini(&queue->lst);
+	queue->cnl = queue->fin = 0;
+	pthread_cond_init(&queue->cnd, NULL);
 	pthread_mutex_init(&queue->mtx, NULL);
-	return queue;
 }
 
-void queue_delete(Queue *queue)
+void queue_del(Queue *queue)
 {
-	pthread_cond_destroy(&queue->cv);
+	pthread_cond_destroy(&queue->cnd);
 	pthread_mutex_destroy(&queue->mtx);
-	list_clear(&queue->list);
-	free(queue);
 }
 
-void queue_enqueue(Queue *queue, void *elem)
+void queue_clr(Queue *queue, Iterator func, void *arg)
 {
+	list_clr(&queue->lst, func, arg);
+}
+
+bool queue_enq(Queue *queue, void *dat)
+{
+	bool success = false;
+
 	pthread_mutex_lock(&queue->mtx);
-	if (! queue->finish) {
-		list_put(&queue->list, elem, NULL);
-		pthread_cond_signal(&queue->cv);
+	if (! queue->fin) {
+		success = true;
+		list_apd(&queue->lst, dat);
+		pthread_cond_signal(&queue->cnd);
 	}
 	pthread_mutex_unlock(&queue->mtx);
+
+	return success;
 }
 
-void *queue_dequeue(Queue *queue)
+void *queue_deq(Queue *queue, Transformer func)
 {
-	return queue_dequeue_callback(queue, NULL);
-}
+	void *dat = NULL;
 
-void *queue_dequeue_callback(Queue *queue, void (*callback)(void *elem))
-{
-	void *elem = NULL;
+	pthread_mutex_lock(&queue->mtx);
+	while (! queue->cnl && ! dat) {
+		ListNode **node = &queue->lst.fst;
+		if (*node) {
+			dat = (*node)->dat;
+			list_nrm(&queue->lst, node);
 
-	while (! queue->cancel && ! elem) {
-		pthread_mutex_lock(&queue->mtx);
-
-		ListPair **lptr = &queue->list.first;
-		if (*lptr) {
-			elem = (*lptr)->key;
-			ListPair *next = (*lptr)->next;
-			free(*lptr);
-			*lptr = next;
-
-			if (callback)
-				callback(elem);
+			if (func)
+				dat = func(dat);
 		} else {
-			pthread_cond_wait(&queue->cv, &queue->mtx);
+			pthread_cond_wait(&queue->cnd, &queue->mtx);
 		}
-
-		pthread_mutex_unlock(&queue->mtx);
 	}
+	pthread_mutex_unlock(&queue->mtx);
 
-	return elem;
+	return dat;
 }
 
-void queue_cancel(Queue *queue)
+void queue_cnl(Queue *queue)
 {
-	queue->cancel = true;
-
 	pthread_mutex_lock(&queue->mtx);
-	pthread_cond_broadcast(&queue->cv);
+	queue->cnl = 1;
+	pthread_cond_broadcast(&queue->cnd);
 	pthread_mutex_unlock(&queue->mtx);
 }
 
-void queue_finish(Queue *queue)
+void queue_fin(Queue *queue)
 {
 	pthread_mutex_lock(&queue->mtx);
-	queue->finish = true;
+	queue->fin = 1;
 	pthread_mutex_unlock(&queue->mtx);
 
-	while (true) {
+	for (;;) {
 		pthread_mutex_lock(&queue->mtx);
-		ListPair *first = queue->list.first;
+		ListNode *node = queue->lst.fst;
 		pthread_mutex_unlock(&queue->mtx);
 
-		if (first)
+		if (node)
 			sched_yield();
 		else
 			break;

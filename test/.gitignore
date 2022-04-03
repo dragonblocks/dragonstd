@@ -1,1 +1,7 @@
 test_array
+test_list
+test_tree
+test_queue
+test_map
+test_flag
+test_refcount_map

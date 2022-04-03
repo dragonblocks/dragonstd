@@ -27,12 +27,16 @@ void dump(Array *arr)
 
 int main()
 {
+	printf("-------------\n");
+	printf("Testing Array\n");
+	printf("-------------\n");
+
 	int i;
 	Array arr, arr2;
-	srand(time(0));
+	srand(time(NULL));
 
 	printf("testing ini\n");
-	array_ini(&arr, sizeof(int), 0, NULL);
+	array_ini(&arr, sizeof(int), 0);
 
 	printf("testing add\n");
 	i = 1; array_add(&arr, &i);
@@ -62,12 +66,12 @@ int main()
 	for (size_t j = 0; j < arr.siz; j++)
 		assert(((int *) arr.ptr)[j] == ((int *) arr2.ptr)[j]);
 
-	printf("testing del\n");
-	array_del(&arr);
-	array_del(&arr2);
+	printf("testing clr\n");
+	array_clr(&arr);
+	array_clr(&arr2);
 
-	printf("testing ini after del\n");
-	array_ini(&arr, sizeof(int), 5, (void *) &cmp_int);
+	printf("testing ini after clr\n");
+	array_ini(&arr, sizeof(int), 5);
 
 	printf("testing cap: exp: 0 got: %lu\n", arr.cap);
 	assert(arr.cap == 0);
@@ -110,13 +114,14 @@ int main()
 	assert(arr.cap == 8);
 
 	printf("testing srt\n");
-	array_srt(&arr);
+	array_srt(&arr, (void *) &cmp_int);
 
 	printf("testing order: exp: (sorted) got: "); dump(&arr); printf("\n");
 	assert_in_order(&arr);
 
 	for (size_t j = 0; j < arr.siz; j++) {
-		i = ((int *) arr.ptr)[j]; ssize_t s = array_fnd(&arr, &i, NULL);
+		i = ((int *) arr.ptr)[j];
+		ssize_t s = array_fnd(&arr, &i, NULL, (void *) &cmp_int);
 
 		printf("testing fnd at index %lu: exp: >=0 got: %ld\n", j, s);
 		assert(s >= 0);
@@ -129,11 +134,11 @@ int main()
 
 	printf("testing ins\n");
 	for (int j = 0; j < 10; j++) {
-		i = rand() % 100; array_ins(&arr, &i);
+		i = rand() % 100; array_ins(&arr, &i, (void *) &cmp_int);
 	}
 
 	printf("testing order: exp: (sorted) got: "); dump(&arr); printf("\n");
 	assert_in_order(&arr);
 
-	array_del(&arr);
+	array_clr(&arr);
 }
