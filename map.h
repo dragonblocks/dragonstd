@@ -38,7 +38,7 @@ void map_dst(Map *map);
 	Make sure to cancel the map before destroying it, to avoid memory leaks.
 */
 
-void map_cnl(Map *map, Iterator func, void *arg, TreeTraversionOrder order);
+void map_cnl(Map *map, Iterator iter, void *arg, Transformer trans, TreeTraversionOrder order);
 /*
 	[Thread Safe]
 	Cancels and clears the map.
@@ -52,7 +52,7 @@ void map_cnl(Map *map, Iterator func, void *arg, TreeTraversionOrder order);
 	If no callback is given, the traversion order is irrelevant.
 */
 
-void *map_add(Map *map, void *dat, Comparator cmp, Transformer func);
+void *map_add(Map *map, void *dat, Comparator cmp, Transformer trans);
 /*
 	[Thread Safe]
 	Add an element to the map.
@@ -61,16 +61,24 @@ void *map_add(Map *map, void *dat, Comparator cmp, Transformer func);
 	Otherwise, return added element.
 */
 
-void *map_get(Map *map, void *key, Comparator cmp, Transformer func);
+void *map_get(Map *map, void *key, Comparator cmp, Transformer trans);
 /*
 	[Thread Safe]
 	Get an element from the map, or return NULL if none found.
 */
 
-void *map_del(Map *map, void *key, Comparator cmp, Transformer func);
+void *map_del(Map *map, void *key, Comparator cmp, Transformer trans);
 /*
 	[Thread Safe]
 	Delete an element from the map and return it, or NULL if none found.
 */
+
+void map_trv(Map *map, Iterator iter, void *arg, Transformer trans, TreeTraversionOrder order);
+/*
+	[Thread Safe]
+	Traverse the map.
+	Calls iter on every element, with the extra argument arg.
+*/
+
 
 #endif

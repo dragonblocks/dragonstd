@@ -50,19 +50,19 @@ void list_nrm(List *list, ListNode **node)
 	free(old);
 }
 
-void list_itr(List *list, Iterator func, void *arg)
+void list_itr(List *list, Iterator iter, void *arg, Transformer trans)
 {
 	LIST_ITERATE(list, node)
-		func(node->dat, arg);
+		iter(trans ? trans(node->dat) : node->dat, arg);
 }
 
-void list_clr(List *list, Iterator func, void *arg)
+void list_clr(List *list, Iterator iter, void *arg, Transformer trans)
 {
 	for (ListNode *node = list->fst; node != NULL;) {
 		ListNode *next = node->nxt;
 
-		if (func)
-			func(node->dat, arg);
+		if (iter)
+			iter(trans ? trans(node->dat) : node->dat, arg);
 
 		free(node);
 		node = next;

@@ -15,9 +15,9 @@ void queue_del(Queue *queue)
 	pthread_mutex_destroy(&queue->mtx);
 }
 
-void queue_clr(Queue *queue, Iterator func, void *arg)
+void queue_clr(Queue *queue, Iterator iter, void *arg, Transformer trans)
 {
-	list_clr(&queue->lst, func, arg);
+	list_clr(&queue->lst, iter, arg, trans);
 }
 
 bool queue_enq(Queue *queue, void *dat)
@@ -35,7 +35,7 @@ bool queue_enq(Queue *queue, void *dat)
 	return success;
 }
 
-void *queue_deq(Queue *queue, Transformer func)
+void *queue_deq(Queue *queue, Transformer trans)
 {
 	void *dat = NULL;
 
@@ -46,8 +46,8 @@ void *queue_deq(Queue *queue, Transformer func)
 			dat = (*node)->dat;
 			list_nrm(&queue->lst, node);
 
-			if (func)
-				dat = func(dat);
+			if (trans)
+				dat = trans(dat);
 		} else {
 			pthread_cond_wait(&queue->cnd, &queue->mtx);
 		}

@@ -33,7 +33,7 @@ void list_ini(List *list);
 	This function should be called before any other function is called on the list.
 */
 
-void *list_add(List *list, void *dat, Comparator cmp, Transformer func);
+void *list_add(List *list, void *dat, Comparator cmp, Transformer trans);
 /*
 	Add an element to the list.
 
@@ -41,14 +41,14 @@ void *list_add(List *list, void *dat, Comparator cmp, Transformer func);
 	Otherwise, return added element.
 */
 
-void *list_get(List *list, void *key, Comparator cmp, Transformer func);
+void *list_get(List *list, void *key, Comparator cmp, Transformer trans);
 /*
 	Get an element from the list.
 
 	The first matching element is returned, or NULL if none found.
 */
 
-void *list_del(List *list, void *key, Comparator cmp, Transformer func);
+void *list_del(List *list, void *key, Comparator cmp, Transformer trans);
 /*
 	Delete an element from the list.
 
@@ -79,18 +79,18 @@ void list_nrm(List *list, ListNode **node);
 	Remove the node at the given location.
 */
 
-void list_itr(List *list, Iterator func, void *arg);
+void list_itr(List *list, Iterator iter, void *arg, Transformer trans);
 /*
 	Iterate over the list.
-	Calls func on every element, with the extra argument arg.
+	Calls iter on every element, with the extra argument arg.
 
 	Note: the LIST_ITERATE macro can be used to do this without function calls.
 */
 
-void list_clr(List *list, Iterator func, void *arg);
+void list_clr(List *list, Iterator iter, void *arg, Transformer trans);
 /*
 	Iterates over the list and deletes all elements.
-	Calls func on every element, with the extra argument arg.
+	Calls iter on every element, with the extra argument arg.
 
 	The list is empty afterwards.
 */

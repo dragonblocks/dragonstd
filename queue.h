@@ -40,7 +40,7 @@ void queue_del(Queue *queue);
 		list is cleared before calling this function.
 */
 
-void queue_clr(Queue *queue, Iterator func, void *arg);
+void queue_clr(Queue *queue, Iterator iter, void *arg, Transformer trans);
 /*
 	Clears the queue.
 
@@ -58,7 +58,7 @@ bool queue_enq(Queue *queue, void *dat);
 	Notifies waiting consumer threads.
 */
 
-void *queue_deq(Queue *queue, Transformer func);
+void *queue_deq(Queue *queue, Transformer trans);
 /*
 	[Thread Safe]
 	Dequeue an element.

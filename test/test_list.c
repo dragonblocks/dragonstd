@@ -42,6 +42,6 @@ int main()
 	assert(list_get(&list, &a, &cmp_int, NULL) == NULL);
 
 	printf("testing clr\n");
-	list_clr(&list, NULL, NULL);
+	list_clr(&list, NULL, NULL, NULL);
 	assert(list_get(&list, &b, &cmp_int, NULL) == NULL);
 }

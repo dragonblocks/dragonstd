@@ -11,9 +11,10 @@ int cmp_int(const void *ia, const void *ib)
 	return *(const int *) ia - *(const int *) ib;
 }
 
-void clear_callback(void *ia, void *ib)
+void clear_callback(int *ia, int *ib)
 {
-	assert(*(int *) ia > *(int *) ib);
+	assert(*ia >= *ib);
+	*ib = *ia;
 	free(ia);
 }
 
@@ -54,7 +55,7 @@ int main()
 	assert(tree_get(&tree, &a, &cmp_int, NULL) == NULL);
 
 	printf("testing clr\n");
-	tree_clr(&tree, NULL, NULL, 0);
+	tree_clr(&tree, NULL, NULL, NULL, 0);
 	assert(tree_get(&tree, &b, &cmp_int, NULL) == NULL);
 
 	printf("testing order and speed with %d elements\n", (int) NUM_ELEMENTS);
@@ -67,5 +68,5 @@ int main()
 	}
 
 	int last = -1;
-	tree_clr(&tree, &clear_callback, &last, TRAVERSION_INORDER);
+	tree_clr(&tree, (void *) &clear_callback, &last, NULL, TRAVERSION_INORDER);
 }

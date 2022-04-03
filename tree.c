@@ -17,16 +17,16 @@ static inline TreeNode **search(TreeNode **node, void *key, Comparator cmp)
 		return search(&(*node)->rgt, key, cmp);
 }
 
-static inline void traverse(TreeNode *node, Iterator func, void *arg, TreeTraversionOrder order, int delete)
+static inline void traverse(TreeNode *node, Iterator iter, void *arg, Transformer trans, TreeTraversionOrder order, int delete)
 {
 	if (! node)
 		return;
 
-	if (func && order == TRAVERSION_PREORDER ) func(node->dat, arg);
-	traverse(node->lft, func, arg, order, delete);
-	if (func && order == TRAVERSION_INORDER  ) func(node->dat, arg);
-	traverse(node->rgt, func, arg, order, delete);
-	if (func && order == TRAVERSION_POSTORDER) func(node->dat, arg);
+	if (iter && order == TRAVERSION_PREORDER ) iter(trans ? trans(node->dat) : node->dat, arg);
+	traverse(node->lft, iter, arg, trans, order, delete);
+	if (iter && order == TRAVERSION_INORDER  ) iter(trans ? trans(node->dat) : node->dat, arg);
+	traverse(node->rgt, iter, arg, trans, order, delete);
+	if (iter && order == TRAVERSION_POSTORDER) iter(trans ? trans(node->dat) : node->dat, arg);
 
 	if (delete)
 		free(node);
@@ -68,13 +68,13 @@ void tree_nrm(__attribute__((unused)) Tree *tree, TreeNode **node)
 	free(old);
 }
 
-void tree_trv(Tree *tree, Iterator func, void *arg, TreeTraversionOrder order)
+void tree_trv(Tree *tree, Iterator iter, void *arg, Transformer trans, TreeTraversionOrder order)
 {
-	traverse(tree->rot, func, arg, order, 0);
+	traverse(tree->rot, iter, arg, trans, order, 0);
 }
 
-void tree_clr(Tree *tree, Iterator func, void *arg, TreeTraversionOrder order)
+void tree_clr(Tree *tree, Iterator iter, void *arg, Transformer trans, TreeTraversionOrder order)
 {
-	traverse(tree->rot, func, arg, order, 1);
+	traverse(tree->rot, iter, arg, trans, order, 1);
 	tree_ini(tree);
 }

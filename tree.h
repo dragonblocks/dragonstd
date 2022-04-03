@@ -43,7 +43,7 @@ void tree_ini(Tree *tree);
 	This function should be called before any other function is called on the tree.
 */
 
-void *tree_add(Tree *tree, void *dat, Comparator cmp, Transformer func);
+void *tree_add(Tree *tree, void *dat, Comparator cmp, Transformer trans);
 /*
 	Add an element to the tree.
 
@@ -51,12 +51,12 @@ void *tree_add(Tree *tree, void *dat, Comparator cmp, Transformer func);
 	Otherwise, return added element.
 */
 
-void *tree_get(Tree *tree, void *key, Comparator cmp, Transformer func);
+void *tree_get(Tree *tree, void *key, Comparator cmp, Transformer trans);
 /*
 	Get an element from the tree, or return NULL if none found.
 */
 
-void *tree_del(Tree *tree, void *key, Comparator cmp, Transformer func);
+void *tree_del(Tree *tree, void *key, Comparator cmp, Transformer trans);
 /*
 	Delete an element from the tree and return it, or NULL if none found.
 */
@@ -79,16 +79,16 @@ void tree_nrm(Tree *tree, TreeNode **node);
 	Remove the node at the given location.
 */
 
-void tree_trv(Tree *tree, Iterator func, void *arg, TreeTraversionOrder order);
+void tree_trv(Tree *tree, Iterator iter, void *arg, Transformer trans, TreeTraversionOrder order);
 /*
 	Traverse the tree.
-	Calls func on every element, with the extra argument arg.
+	Calls iter on every element, with the extra argument arg.
 */
 
-void tree_clr(Tree *tree, Iterator func, void *arg, TreeTraversionOrder order);
+void tree_clr(Tree *tree, Iterator iter, void *arg, Transformer trans, TreeTraversionOrder order);
 /*
 	Traverses the tree and deletes all elements.
-	Calls func on every element, with the extra argument arg.
+	Calls iter on every element, with the extra argument arg.
 
 	The tree is empty afterwards.
 	If no callback is given, the traversion order is irrelevant.

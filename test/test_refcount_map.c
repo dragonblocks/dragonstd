@@ -137,7 +137,7 @@ int main()
 				results[i][0] += results[i][j];
 		}
 
-	map_cnl(&map, (void *) &refcount_drp, NULL, 0);
+	map_cnl(&map, (void *) &refcount_drp, NULL, NULL, 0);
 	map_dst(&map);
 
 	printf("Time: 10 seconds\n");
