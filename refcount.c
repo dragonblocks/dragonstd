@@ -25,7 +25,7 @@ void *refcount_inc(void *refcount)
 
 void *refcount_grb(void *refcount)
 {
-	return ((Refcount *) refcount_inc(refcount))->obj;
+	return refcount_obj(refcount_inc(refcount));
 }
 
 void *refcount_drp(void *refcount)
@@ -40,4 +40,9 @@ void *refcount_drp(void *refcount)
 		return rc->del(rc->obj);
 
 	return rc->obj;
+}
+
+void *refcount_obj(void *refcount)
+{
+	return ((Refcount *) refcount)->obj;
 }

@@ -72,4 +72,12 @@ void *refcount_drp(void *refcount);
 		otherwise.
 */
 
+void *refcount_obj(void *refcount)
+/*
+	[Thread Safe]
+	Return referenced object.
+	This actually takes a Refcount * as argument, however void * is used to make it more
+		convenient to use the function as callback.
+*/
+
 #endif // _DRAGONSTD_REFCOUNT_H_
