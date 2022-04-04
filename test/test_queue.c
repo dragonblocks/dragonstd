@@ -85,7 +85,7 @@ int main()
 	for (int i = 0; i < 17; i++)
 		pthread_join(threads[i], NULL);
 
-	queue_del(&queue);
+	queue_dst(&queue);
 	printf("\n");
 }
 

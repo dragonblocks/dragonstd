@@ -9,7 +9,7 @@ void queue_ini(Queue *queue)
 	pthread_mutex_init(&queue->mtx, NULL);
 }
 
-void queue_del(Queue *queue)
+void queue_dst(Queue *queue)
 {
 	pthread_cond_destroy(&queue->cnd);
 	pthread_mutex_destroy(&queue->mtx);

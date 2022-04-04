@@ -30,9 +30,9 @@ void queue_ini(Queue *queue);
 	The queue should be uninitialized or deleted when passed to this function.
 */
 
-void queue_del(Queue *queue);
+void queue_dst(Queue *queue);
 /*
-	Delete the queue.
+	Destroy the queue.
 
 	Afterwards, the queue should no longer be used.
 
