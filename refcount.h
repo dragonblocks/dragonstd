@@ -72,7 +72,7 @@ void *refcount_drp(void *refcount);
 		otherwise.
 */
 
-void *refcount_obj(void *refcount)
+void *refcount_obj(void *refcount);
 /*
 	[Thread Safe]
 	Return referenced object.
