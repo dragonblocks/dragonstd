@@ -61,6 +61,11 @@ void list_apd(List *list, void *dat);
 	Append an element at the end of the list.
 */
 
+void list_ppd(List *list, void *dat);
+/*
+	Prepend an element at the start of the list.
+*/
+
 ListNode **list_nfd(List *list, void *key, Comparator cmp);
 /*
 	Find the location of the first node matching key.

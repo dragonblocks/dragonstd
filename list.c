@@ -18,6 +18,13 @@ void list_apd(List *list, void *dat)
 	list_nmk(list, list->end, dat);
 }
 
+void list_ppd(List *list, void *dat)
+{
+	ListNode *fst = list->fst;
+	list_nmk(list, &list->fst, dat);
+	list->fst->nxt = fst;
+}
+
 ListNode **list_nfd(List *list, void *key, Comparator cmp)
 {
 	ListNode **node;
