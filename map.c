@@ -66,4 +66,5 @@ void map_trv(Map *map, Iterator iter, void *arg, Transformer trans, TreeTraversi
 		return;
 
 	tree_trv(&map->tre, iter, arg, trans, order);
+	pthread_rwlock_unlock(&map->tlk);
 }
