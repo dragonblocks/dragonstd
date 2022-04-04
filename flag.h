@@ -14,13 +14,15 @@
 #include <pthread.h>   // for pthread_mutex_t, pthread_cond_t
 #include <stdatomic.h> // for atomic_bool
 #include <stdbool.h>   // for bool
+#include "list.h"      // for List
 
 typedef struct {
 	/* protected */
 	atomic_bool set;     // whether the flag is set
 	/* private */
-	pthread_cond_t cnd;  // condition variable used for waiting
-	pthread_mutex_t mtx; // mutex to protect the condition variable
+	pthread_cond_t cnd;  // main condition variable
+	pthread_mutex_t mtx; // mutex to protect the main condition variable
+	List cvs;            // condition variables
 } Flag;
 
 void flag_ini(Flag *flag);
@@ -36,6 +38,22 @@ void flag_dst(Flag *flag);
 	Destroy the flag.
 
 	The refcount is unusable until reinitialized afterwards.
+*/
+
+void flag_sub(Flag *flag, pthread_cond_t *cnd);
+/*
+	[Thread Safe]
+	Subscribe condition variable cnd to flag.
+
+	The condition variable will be triggered when the flag is set.
+*/
+
+void flag_uns(Flag *flag, pthread_cond_t *cnd);
+/*
+	[Thread Safe]
+	Unsubscribe condition variable cnd from flag.
+
+	The condition variable will no longer be triggered when the flag is set.
 */
 
 void flag_set(Flag *flag);

@@ -126,7 +126,7 @@ int main()
 		for (int j = 0; j < 5; j++)
 			pthread_create(&threads[i][j], NULL, funcs[i], &results[i][j]);
 
-	sleep(10);
+	sleep(1);
 
 	cancel = true;
 	for (int i = 0; i < 3; i++)
@@ -140,7 +140,7 @@ int main()
 	map_cnl(&map, (void *) &refcount_drp, NULL, NULL, 0);
 	map_dst(&map);
 
-	printf("Time: 10 seconds\n");
+	printf("Time: 1 second\n");
 	printf("Created objects: %u\n", results[0][0]);
 	printf("Accessed objects: %u\n", results[1][0]);
 	printf("Deleted objects: %u\n", results[2][0]);

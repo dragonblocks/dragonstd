@@ -9,6 +9,7 @@
 #define _DRAGONSTD_LIST_H_
 
 #include "bits/callback.h" // for Iterator, Comparator
+#include "bits/compare.h"  // for cmp_ref (not used in file)
 
 #define LIST_ITERATE(list, node) for (ListNode *node = (list)->fst; node != NULL; node = node->nxt)
 

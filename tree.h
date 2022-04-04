@@ -15,6 +15,7 @@
 #define _DRAGONSTD_TREE_H_
 
 #include "bits/callback.h" // for Iterator, Comparator
+#include "bits/compare.h"  // for cmp_ref (not used in file)
 
 typedef struct TreeNode {
 	/* public */
