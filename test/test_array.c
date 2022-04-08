@@ -39,9 +39,9 @@ int main()
 	array_ini(&arr, sizeof(int), 0);
 
 	printf("testing add\n");
-	i = 1; array_add(&arr, &i);
-	i = 3; array_add(&arr, &i);
-	i = 4; array_add(&arr, &i);
+	i = 1; array_apd(&arr, &i);
+	i = 3; array_apd(&arr, &i);
+	i = 4; array_apd(&arr, &i);
 
 	printf("testing put\n");
 	i = 2; array_put(&arr, &i, 1);
@@ -77,7 +77,7 @@ int main()
 	assert(arr.cap == 0);
 
 	printf("testing overallocation\n");
-	i = 50; array_add(&arr, &i);
+	i = 50; array_apd(&arr, &i);
 
 	printf("testing cap: exp: 0 got: %lu\n", arr.cap);
 	assert(arr.siz == 1);
@@ -86,7 +86,7 @@ int main()
 	assert(arr.cap == 6);
 
 	for (int j = 0; j < 7; j++) {
-		i = rand() % 100; array_add(&arr, &i);
+		i = rand() % 100; array_apd(&arr, &i);
 	}
 
 	printf("testing siz: exp: 8 got: %lu\n", arr.cap);

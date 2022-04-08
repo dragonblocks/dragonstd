@@ -89,7 +89,7 @@ void array_put(Array *array, const void *ptr, size_t n);
 	n should be in the range from 0 to the array's size.
 */
 
-void array_add(Array *array, const void *ptr);
+void array_apd(Array *array, const void *ptr);
 /*
 	Grows the array by 1 and appends ptr at the end of the array.
 

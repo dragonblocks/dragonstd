@@ -46,7 +46,7 @@ void array_put(Array *array, const void *ptr, size_t n)
 	memcpy(iptr, ptr, array->mbs);
 }
 
-void array_add(Array *array, const void *ptr)
+void array_apd(Array *array, const void *ptr)
 {
 	size_t oldsiz = array->siz;
 	array_grw(array, 1);
