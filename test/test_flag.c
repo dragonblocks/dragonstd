@@ -21,7 +21,7 @@ void *start_thread(__attribute__((unused)) void *val)
 
 bool is_finished()
 {
-	ITER_FLAGS if (! flags[i].set)
+	ITER_FLAGS if (!flags[i].set)
 		return false;
 
 	return true;
@@ -39,7 +39,7 @@ int main()
 	pthread_t thread;
 	pthread_create(&thread, NULL, &start_thread, NULL);
 
-	while (! is_finished()) {
+	while (!is_finished()) {
 		int i = rand() % NUM_FLAGS;
 
 		printf("setting flag %d\n", i);

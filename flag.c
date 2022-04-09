@@ -44,7 +44,7 @@ void flag_set(Flag *flag)
 void flag_slp(Flag *flag)
 {
 	pthread_mutex_lock(&flag->mtx);
-	if (! flag->set)
+	if (!flag->set)
 		pthread_cond_wait(&flag->cnd, &flag->mtx);
 	pthread_mutex_unlock(&flag->mtx);
 }

@@ -3,7 +3,7 @@
 	{ \
 		Type ## Node **node = prefix ## nfd(self, dat, cmp); \
  \
-		if (! *node) \
+		if (!*node) \
 			prefix ## nmk(self, node, trans ? trans(dat) : dat); \
  \
 		return (*node)->dat; \
@@ -13,7 +13,7 @@
 	{ \
 		Type ## Node **node = prefix ## nfd(self, key, cmp); \
  \
-		if (! *node) \
+		if (!*node) \
 			return NULL; \
  \
 		return trans ? trans((*node)->dat) : (*node)->dat; \
@@ -23,7 +23,7 @@
 	{ \
 		Type ## Node **node = prefix ## nfd(self, key, cmp); \
  \
-		if (! *node) \
+		if (!*node) \
 			return NULL; \
  \
 		void *dat = trans ? trans((*node)->dat) : (*node)->dat; \

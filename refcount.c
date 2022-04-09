@@ -36,7 +36,7 @@ void *refcount_drp(void *refcount)
 	unsigned short count = --rc->cnt;
 	pthread_mutex_unlock(&rc->mtx);
 
-	if (! count)
+	if (!count)
 		return rc->del(rc->obj);
 
 	return rc->obj;

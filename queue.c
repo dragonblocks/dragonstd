@@ -25,7 +25,7 @@ bool queue_enq(Queue *queue, void *dat)
 	bool success = false;
 
 	pthread_mutex_lock(&queue->mtx);
-	if (! queue->fin) {
+	if (!queue->fin) {
 		success = true;
 		list_apd(&queue->lst, dat);
 		pthread_cond_signal(&queue->cnd);
@@ -40,7 +40,7 @@ void *queue_deq(Queue *queue, Transformer trans)
 	void *dat = NULL;
 
 	pthread_mutex_lock(&queue->mtx);
-	while (! queue->cnl && ! dat) {
+	while (!queue->cnl && !dat) {
 		ListNode **node = &queue->lst.fst;
 		if (*node) {
 			dat = (*node)->dat;
