@@ -50,7 +50,7 @@ void *list_get(List *list, void *key, Comparator cmp, Transformer trans);
 	The first matching element is returned, or NULL if none found.
 */
 
-bool list_del(List *list, void *key, Comparator cmp, Callback call, void *arg);
+bool list_del(List *list, void *key, Comparator cmp, Callback call, void *arg, Transformer trans);
 /*
 	Delete an element from the list if it is found.
 	Return whether an element has been deleted.

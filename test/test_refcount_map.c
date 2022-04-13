@@ -95,7 +95,7 @@ static void *thread_delete(unsigned int *result)
 	while (!cancel) {
 		unsigned int id = rand_id();
 
-		if (map_del(&map, &id, &data_object_compare_id, (void *) &refcount_drp, NULL))
+		if (map_del(&map, &id, &data_object_compare_id, (void *) &refcount_drp, NULL, NULL))
 			(*result)++;
 	}
 

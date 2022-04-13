@@ -58,7 +58,7 @@ void *tree_get(Tree *tree, void *key, Comparator cmp, Transformer trans);
 	Get an element from the tree, or return NULL if none found.
 */
 
-bool tree_del(Tree *tree, void *key, Comparator cmp, Callback call, void *arg);
+bool tree_del(Tree *tree, void *key, Comparator cmp, Callback call, void *arg, Transformer trans);
 /*
 	Delete an element from the tree if it is found.
 	Return whether an element has been deleted.

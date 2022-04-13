@@ -67,7 +67,7 @@ void *map_get(Map *map, void *key, Comparator cmp, Transformer trans);
 	Get an element from the map, or return NULL if none found.
 */
 
-bool map_del(Map *map, void *key, Comparator cmp, Callback call, void *arg);
+bool map_del(Map *map, void *key, Comparator cmp, Callback call, void *arg, Transformer trans);
 /*
 	[Thread Safe]
 	Delete an element from the map if it is found.

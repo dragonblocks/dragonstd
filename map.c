@@ -65,12 +65,12 @@ void *map_get(Map *map, void *key, Comparator cmp, Transformer trans)
 	return ret;
 }
 
-bool map_del(Map *map, void *key, Comparator cmp, Callback call, void *arg)
+bool map_del(Map *map, void *key, Comparator cmp, Callback call, void *arg, Transformer trans)
 {
 	if (!get_lock(map, true))
 		return false;
 
-	bool ret = tree_del(&map->tre, key, cmp, call, arg);
+	bool ret = tree_del(&map->tre, key, cmp, call, arg, trans);
 	pthread_rwlock_unlock(&map->tlk);
 	return ret;
 }

@@ -26,7 +26,7 @@ void flag_sub(Flag *flag, pthread_cond_t *cnd)
 void flag_uns(Flag *flag, pthread_cond_t *cnd)
 {
 	pthread_mutex_lock(&flag->mtx);
-	list_del(&flag->cvs, cnd, &cmp_ref, NULL, NULL);
+	list_del(&flag->cvs, cnd, &cmp_ref, NULL, NULL, NULL);
 	pthread_mutex_unlock(&flag->mtx);
 }
 

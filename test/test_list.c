@@ -38,7 +38,7 @@ int main()
 	assert(list_get(&list, &e, &cmp_int, NULL) == NULL);
 
 	printf("testing del\n");
-	assert(list_del(&list, &a, &cmp_int, NULL, NULL));
+	assert(list_del(&list, &a, &cmp_int, NULL, NULL, NULL));
 	assert(list_get(&list, &a, &cmp_int, NULL) == NULL);
 
 	printf("testing clr\n");

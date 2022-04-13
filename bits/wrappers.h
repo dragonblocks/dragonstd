@@ -20,15 +20,15 @@
 		return trans ? trans((*node)->dat) : (*node)->dat; \
 	} \
  \
-	bool prefix ## del(Type *self, void *key, Comparator cmp, Callback call, void *arg) \
+	bool prefix ## del(Type *self, void *key, Comparator cmp, Callback call, void *arg, Transformer trans) \
 	{ \
 		Type ## Node **node = prefix ## nfd(self, key, cmp); \
  \
 		if (!*node) \
 			return false; \
  \
- 		if (call) \
- 			call((*node)->dat, arg); \
+		if (call) \
+			call(trans ? trans((*node)->dat) : (*node)->dat, arg); \
  \
 		prefix ## nrm(self, node); \
 		return true; \
