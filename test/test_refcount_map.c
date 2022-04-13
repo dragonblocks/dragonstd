@@ -43,7 +43,7 @@ int data_object_compare_id(const void *pa, const void *pb)
 
 static void *thread_create(unsigned int *result)
 {
-	while (! cancel) {
+	while (!cancel) {
 		DataObject *obj = malloc(sizeof *obj);
 		obj->id = rand_id();
 
@@ -64,7 +64,7 @@ static void *thread_access(unsigned int *result)
 {
 	DataObject *objs[NUM_OBJS] = {NULL};
 
-	while (! cancel) {
+	while (!cancel) {
 		int i = rand() % NUM_OBJS;
 
 		if (objs[i]) {
@@ -72,7 +72,7 @@ static void *thread_access(unsigned int *result)
 			objs[i] = NULL;
 		}
 
-		while (! objs[i] && ! cancel) {
+		while (!objs[i] && !cancel) {
 			int id = rand_id();
 			objs[i] = map_get(&map, &id, &data_object_compare_id, &refcount_grb);
 		}
@@ -92,7 +92,7 @@ static void *thread_access(unsigned int *result)
 
 static void *thread_delete(unsigned int *result)
 {
-	while (! cancel) {
+	while (!cancel) {
 		unsigned int id = rand_id();
 
 		if (map_del(&map, &id, &data_object_compare_id, &refcount_drp))

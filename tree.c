@@ -4,7 +4,7 @@
 
 static inline TreeNode **search(TreeNode **node, void *key, Comparator cmp)
 {
-	if (! *node)
+	if (!*node)
 		return node;
 
 	int rel = cmp((*node)->dat, key);
@@ -19,7 +19,7 @@ static inline TreeNode **search(TreeNode **node, void *key, Comparator cmp)
 
 static inline void traverse(TreeNode *node, Iterator iter, void *arg, Transformer trans, TreeTraversionOrder order, int delete)
 {
-	if (! node)
+	if (!node)
 		return;
 
 	if (iter && order == TRAVERSION_PREORDER ) iter(trans ? trans(node->dat) : node->dat, arg);

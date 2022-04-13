@@ -14,7 +14,7 @@
 	{ \
 		Type ## Node **node = prefix ## nfd(self, key, cmp); \
  \
-		if (! *node) \
+		if (!*node) \
 			return NULL; \
  \
 		return trans ? trans((*node)->dat) : (*node)->dat; \
@@ -24,7 +24,7 @@
 	{ \
 		Type ## Node **node = prefix ## nfd(self, key, cmp); \
  \
-		if (! *node) \
+		if (!*node) \
 			return false; \
  \
  		if (call) \

@@ -6,7 +6,7 @@ static bool get_lock(Map *map, bool write)
 
 	pthread_rwlock_rdlock(&map->clk);
 
-	if ((success = ! map->cnl)) {
+	if ((success = !map->cnl)) {
 		if (write)
 			pthread_rwlock_wrlock(&map->tlk);
 		else
@@ -48,7 +48,7 @@ void map_cnl(Map *map, Iterator iter, void *arg, Transformer trans, TreeTraversi
 #define WRAP_TREE_FUNC(type, name, write, CallbackType, null) \
 	type map_ ## name(Map *map, void *dat, Comparator cmp, CallbackType func) \
 	{ \
-		if (! get_lock(map, write)) \
+		if (!get_lock(map, write)) \
 			return null; \
  \
 		type ret = tree_ ## name(&map->tre, dat, cmp, func); \
@@ -62,7 +62,7 @@ WRAP_TREE_FUNC(bool,   del, true,  Callback,    false)
 
 void map_trv(Map *map, Iterator iter, void *arg, Transformer trans, TreeTraversionOrder order)
 {
-	if (! get_lock(map, false))
+	if (!get_lock(map, false))
 		return;
 
 	tree_trv(&map->tre, iter, arg, trans, order);
