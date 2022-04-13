@@ -57,13 +57,13 @@ void list_nrm(List *list, ListNode **node)
 	free(old);
 }
 
-void list_itr(List *list, Iterator iter, void *arg, Transformer trans)
+void list_itr(List *list, Callback iter, void *arg, Transformer trans)
 {
 	LIST_ITERATE(list, node)
 		iter(trans ? trans(node->dat) : node->dat, arg);
 }
 
-void list_clr(List *list, Iterator iter, void *arg, Transformer trans)
+void list_clr(List *list, Callback iter, void *arg, Transformer trans)
 {
 	for (ListNode *node = list->fst; node != NULL;) {
 		ListNode *next = node->nxt;

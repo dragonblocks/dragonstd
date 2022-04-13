@@ -49,7 +49,7 @@ static void *thread_create(unsigned int *result)
 
 		refcount_ini(&obj->rc, obj, (void *) &data_object_delete);
 
-		if (map_add(&map, &obj->rc, &data_object_compare, &refcount_inc))
+		if (map_add(&map, &obj->rc, &data_object_compare, (void *) &refcount_inc))
 			(*result)++;
 
 		refcount_drp(&obj->rc);
@@ -74,7 +74,7 @@ static void *thread_access(unsigned int *result)
 
 		while (!objs[i] && !cancel) {
 			int id = rand_id();
-			objs[i] = map_get(&map, &id, &data_object_compare_id, &refcount_grb);
+			objs[i] = map_get(&map, &id, &data_object_compare_id, (void *) &refcount_grb);
 		}
 
 		if (objs[i])
@@ -95,7 +95,7 @@ static void *thread_delete(unsigned int *result)
 	while (!cancel) {
 		unsigned int id = rand_id();
 
-		if (map_del(&map, &id, &data_object_compare_id, &refcount_drp))
+		if (map_del(&map, &id, &data_object_compare_id, (void *) &refcount_drp, NULL))
 			(*result)++;
 	}
 

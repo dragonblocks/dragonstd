@@ -40,7 +40,7 @@ void queue_dst(Queue *queue);
 		list is cleared before calling this function.
 */
 
-void queue_clr(Queue *queue, Iterator iter, void *arg, Transformer trans);
+void queue_clr(Queue *queue, Callback iter, void *arg, Transformer trans);
 /*
 	Clears the queue.
 

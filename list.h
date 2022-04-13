@@ -9,7 +9,7 @@
 #define _DRAGONSTD_LIST_H_
 
 #include <stdbool.h>       // for bool
-#include "bits/callback.h" // for Iterator, Comparator, Transformer, Callback
+#include "bits/callback.h" // for Callback, Comparator, Transformer, Callback
 #include "bits/compare.h"  // for cmp_ref (not used in file)
 
 #define LIST_ITERATE(list, node) for (ListNode *node = (list)->fst; node != NULL; node = node->nxt)
@@ -50,7 +50,7 @@ void *list_get(List *list, void *key, Comparator cmp, Transformer trans);
 	The first matching element is returned, or NULL if none found.
 */
 
-bool list_del(List *list, void *key, Comparator cmp, Callback call);
+bool list_del(List *list, void *key, Comparator cmp, Callback call, void *arg);
 /*
 	Delete an element from the list if it is found.
 	Return whether an element has been deleted.
@@ -86,7 +86,7 @@ void list_nrm(List *list, ListNode **node);
 	Remove the node at the given location.
 */
 
-void list_itr(List *list, Iterator iter, void *arg, Transformer trans);
+void list_itr(List *list, Callback iter, void *arg, Transformer trans);
 /*
 	Iterate over the list.
 	Calls iter on every element, with the extra argument arg.
@@ -94,7 +94,7 @@ void list_itr(List *list, Iterator iter, void *arg, Transformer trans);
 	Note: the LIST_ITERATE macro can be used to do this without function calls.
 */
 
-void list_clr(List *list, Iterator iter, void *arg, Transformer trans);
+void list_clr(List *list, Callback iter, void *arg, Transformer trans);
 /*
 	Iterates over the list and deletes all elements.
 	Calls iter on every element, with the extra argument arg.

@@ -1,6 +1,6 @@
 #include "refcount.h"
 
-void refcount_ini(Refcount *refcount, void *obj, Callback del)
+void refcount_ini(Refcount *refcount, void *obj, SingleCallback del)
 {
 	refcount->obj = obj;
 	refcount->del = del;
@@ -13,34 +13,30 @@ void refcount_dst(Refcount *refcount)
 	pthread_mutex_destroy(&refcount->mtx);
 }
 
-void *refcount_inc(void *refcount)
+void *refcount_inc(Refcount *refcount)
 {
-	Refcount *rc = refcount;
-
-	pthread_mutex_lock(&rc->mtx);
-	rc->cnt++;
-	pthread_mutex_unlock(&rc->mtx);
-	return rc;
+	pthread_mutex_lock(&refcount->mtx);
+	refcount->cnt++;
+	pthread_mutex_unlock(&refcount->mtx);
+	return refcount;
 }
 
-void *refcount_grb(void *refcount)
+void *refcount_grb(Refcount *refcount)
 {
 	return refcount_obj(refcount_inc(refcount));
 }
 
-void refcount_drp(void *refcount)
+void refcount_drp(Refcount *refcount)
 {
-	Refcount *rc = refcount;
-
-	pthread_mutex_lock(&rc->mtx);
-	unsigned short count = --rc->cnt;
-	pthread_mutex_unlock(&rc->mtx);
+	pthread_mutex_lock(&refcount->mtx);
+	unsigned short count = --refcount->cnt;
+	pthread_mutex_unlock(&refcount->mtx);
 
 	if (!count)
-		rc->del(rc->obj);
+		refcount->del(refcount->obj);
 }
 
-void *refcount_obj(void *refcount)
+void *refcount_obj(Refcount *refcount)
 {
-	return ((Refcount *) refcount)->obj;
+	return refcount->obj;
 }

@@ -17,7 +17,7 @@ static inline TreeNode **search(TreeNode **node, void *key, Comparator cmp)
 		return search(&(*node)->rgt, key, cmp);
 }
 
-static inline void traverse(TreeNode *node, Iterator iter, void *arg, Transformer trans, TreeTraversionOrder order, int delete)
+static inline void traverse(TreeNode *node, Callback iter, void *arg, Transformer trans, TreeTraversionOrder order, int delete)
 {
 	if (!node)
 		return;
@@ -68,12 +68,12 @@ void tree_nrm(__attribute__((unused)) Tree *tree, TreeNode **node)
 	free(old);
 }
 
-void tree_trv(Tree *tree, Iterator iter, void *arg, Transformer trans, TreeTraversionOrder order)
+void tree_trv(Tree *tree, Callback iter, void *arg, Transformer trans, TreeTraversionOrder order)
 {
 	traverse(tree->rot, iter, arg, trans, order, 0);
 }
 
-void tree_clr(Tree *tree, Iterator iter, void *arg, Transformer trans, TreeTraversionOrder order)
+void tree_clr(Tree *tree, Callback iter, void *arg, Transformer trans, TreeTraversionOrder order)
 {
 	traverse(tree->rot, iter, arg, trans, order, 1);
 	tree_ini(tree);

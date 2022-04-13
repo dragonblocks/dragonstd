@@ -51,7 +51,7 @@ int main()
 	assert(tree_get(&tree, &e, &cmp_int, NULL) == NULL);
 
 	printf("testing del\n");
-	assert(tree_del(&tree, &a, &cmp_int, NULL));
+	assert(tree_del(&tree, &a, &cmp_int, NULL, NULL));
 	assert(tree_get(&tree, &a, &cmp_int, NULL) == NULL);
 
 	printf("testing clr\n");

@@ -15,7 +15,7 @@ void queue_dst(Queue *queue)
 	pthread_mutex_destroy(&queue->mtx);
 }
 
-void queue_clr(Queue *queue, Iterator iter, void *arg, Transformer trans)
+void queue_clr(Queue *queue, Callback iter, void *arg, Transformer trans)
 {
 	list_clr(&queue->lst, iter, arg, trans);
 }

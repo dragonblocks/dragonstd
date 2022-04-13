@@ -19,12 +19,12 @@
 typedef struct {
 	/* private */
 	void *obj;
-	Callback del;
+	SingleCallback del;
 	unsigned short cnt;  // counter
 	pthread_mutex_t mtx; // lock to protect count
 } Refcount;
 
-void refcount_ini(Refcount *refcount, void *obj, Callback del);
+void refcount_ini(Refcount *refcount, void *obj, SingleCallback del);
 /*
 	Initializes the refcount.
 
@@ -43,39 +43,33 @@ void refcount_dst(Refcount *refcount);
 	The refcount is unusable until reinitialized afterwards.
 */
 
-void *refcount_inc(void *refcount);
+void *refcount_inc(Refcount *refcount);
 /*
 	[Thread Safe]
 	Grab a reference to the refcount.
-	This actually takes a Refcount * as argument, however void * is used to make it more
-		convenient to use the function as callback.
 
 	Returns the refcount.
 */
 
-void *refcount_grb(void *refcount);
+void *refcount_grb(Refcount *rc);
 /*
 	[Thread Safe]
 	Does the same as refcount_inc, except it returns the referenced object instead of the
 		refcount.
 */
 
-void refcount_drp(void *refcount);
+void refcount_drp(Refcount *refcount);
 /*
 	[Thread Safe]
 	Drop a reference to the object.
-	This actually takes a Refcount * as argument, however void * is used to make it more
-		convenient to use the function as callback.
 
 	May delete the object using the del function if the counter gets down to zero.
 */
 
-void *refcount_obj(void *refcount);
+void *refcount_obj(Refcount *refcount);
 /*
 	[Thread Safe]
 	Return referenced object.
-	This actually takes a Refcount * as argument, however void * is used to make it more
-		convenient to use the function as callback.
 */
 
 #endif // _DRAGONSTD_REFCOUNT_H_

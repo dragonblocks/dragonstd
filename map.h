@@ -11,7 +11,7 @@
 
 #include <stdbool.h>       // for bool
 #include <pthread.h>       // for pthread_rwlock_t
-#include "bits/callback.h" // for Transformer, Comparator, Iterator
+#include "bits/callback.h" // for Transformer, Comparator, Callback
 #include "tree.h"          // for Tree
 
 typedef struct {
@@ -38,7 +38,7 @@ void map_dst(Map *map);
 	Make sure to cancel the map before destroying it, to avoid memory leaks.
 */
 
-void map_cnl(Map *map, Iterator iter, void *arg, Transformer trans, TreeTraversionOrder order);
+void map_cnl(Map *map, Callback iter, void *arg, Transformer trans, TreeTraversionOrder order);
 /*
 	[Thread Safe]
 	Cancels and clears the map.
@@ -67,14 +67,14 @@ void *map_get(Map *map, void *key, Comparator cmp, Transformer trans);
 	Get an element from the map, or return NULL if none found.
 */
 
-bool map_del(Map *map, void *key, Comparator cmp, Callback call);
+bool map_del(Map *map, void *key, Comparator cmp, Callback call, void *arg);
 /*
 	[Thread Safe]
 	Delete an element from the map if it is found.
 	Return whether an element has been deleted.
 */
 
-void map_trv(Map *map, Iterator iter, void *arg, Transformer trans, TreeTraversionOrder order);
+void map_trv(Map *map, Callback iter, void *arg, Transformer trans, TreeTraversionOrder order);
 /*
 	[Thread Safe]
 	Traverse the map.

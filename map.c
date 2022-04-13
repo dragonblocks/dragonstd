@@ -32,7 +32,7 @@ void map_dst(Map *map)
 	pthread_rwlock_destroy(&map->clk);
 }
 
-void map_cnl(Map *map, Iterator iter, void *arg, Transformer trans, TreeTraversionOrder order)
+void map_cnl(Map *map, Callback iter, void *arg, Transformer trans, TreeTraversionOrder order)
 {
 	pthread_rwlock_wrlock(&map->clk);
 	map->cnl = true;
@@ -45,22 +45,37 @@ void map_cnl(Map *map, Iterator iter, void *arg, Transformer trans, TreeTraversi
 	pthread_rwlock_unlock(&map->tlk);
 }
 
-#define WRAP_TREE_FUNC(type, name, write, CallbackType, null) \
-	type map_ ## name(Map *map, void *dat, Comparator cmp, CallbackType func) \
-	{ \
-		if (!get_lock(map, write)) \
-			return null; \
- \
-		type ret = tree_ ## name(&map->tre, dat, cmp, func); \
-		pthread_rwlock_unlock(&map->tlk); \
-		return ret; \
-	}
+bool map_add(Map *map, void *dat, Comparator cmp, Transformer trans)
+{
+	if (!get_lock(map, true))
+		return false;
 
-WRAP_TREE_FUNC(bool,   add, true,  Transformer, false)
-WRAP_TREE_FUNC(void *, get, false, Transformer, NULL)
-WRAP_TREE_FUNC(bool,   del, true,  Callback,    false)
+	bool ret = tree_add(&map->tre, dat, cmp, trans);
+	pthread_rwlock_unlock(&map->tlk);
+	return ret;
+}
 
-void map_trv(Map *map, Iterator iter, void *arg, Transformer trans, TreeTraversionOrder order)
+void *map_get(Map *map, void *key, Comparator cmp, Transformer trans)
+{
+	if (!get_lock(map, false))
+		return NULL;
+
+	void *ret = tree_get(&map->tre, key, cmp, trans);
+	pthread_rwlock_unlock(&map->tlk);
+	return ret;
+}
+
+bool map_del(Map *map, void *key, Comparator cmp, Callback call, void *arg)
+{
+	if (!get_lock(map, true))
+		return false;
+
+	bool ret = tree_del(&map->tre, key, cmp, call, arg);
+	pthread_rwlock_unlock(&map->tlk);
+	return ret;
+}
+
+void map_trv(Map *map, Callback iter, void *arg, Transformer trans, TreeTraversionOrder order)
 {
 	if (!get_lock(map, false))
 		return;
