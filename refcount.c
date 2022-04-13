@@ -1,6 +1,6 @@
 #include "refcount.h"
 
-void refcount_ini(Refcount *refcount, void *obj, Transformer del)
+void refcount_ini(Refcount *refcount, void *obj, Callback del)
 {
 	refcount->obj = obj;
 	refcount->del = del;
@@ -28,7 +28,7 @@ void *refcount_grb(void *refcount)
 	return refcount_obj(refcount_inc(refcount));
 }
 
-void *refcount_drp(void *refcount)
+void refcount_drp(void *refcount)
 {
 	Refcount *rc = refcount;
 
@@ -37,9 +37,7 @@ void *refcount_drp(void *refcount)
 	pthread_mutex_unlock(&rc->mtx);
 
 	if (! count)
-		return rc->del(rc->obj);
-
-	return rc->obj;
+		rc->del(rc->obj);
 }
 
 void *refcount_obj(void *refcount)

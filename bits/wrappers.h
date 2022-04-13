@@ -1,12 +1,13 @@
 #define WRAP_NODE_FUNCTIONS(Type, prefix) \
-	void *prefix ## add(Type *self, void *dat, Comparator cmp, Transformer trans) \
+	bool prefix ## add(Type *self, void *dat, Comparator cmp, Transformer trans) \
 	{ \
 		Type ## Node **node = prefix ## nfd(self, dat, cmp); \
  \
-		if (! *node) \
-			prefix ## nmk(self, node, trans ? trans(dat) : dat); \
+		if (*node) \
+			return false; \
  \
-		return (*node)->dat; \
+		prefix ## nmk(self, node, trans ? trans(dat) : dat); \
+		return true; \
 	} \
  \
 	void *prefix ## get(Type *self, void *key, Comparator cmp, Transformer trans) \
@@ -19,14 +20,16 @@
 		return trans ? trans((*node)->dat) : (*node)->dat; \
 	} \
  \
-	void *prefix ## del(Type *self, void *key, Comparator cmp, Transformer trans) \
+	bool prefix ## del(Type *self, void *key, Comparator cmp, Callback call) \
 	{ \
 		Type ## Node **node = prefix ## nfd(self, key, cmp); \
  \
 		if (! *node) \
-			return NULL; \
+			return false; \
  \
-		void *dat = trans ? trans((*node)->dat) : (*node)->dat; \
+ 		if (call) \
+ 			call((*node)->dat); \
+ \
 		prefix ## nrm(self, node); \
-		return dat; \
+		return true; \
 	}

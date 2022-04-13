@@ -52,13 +52,13 @@ void map_cnl(Map *map, Iterator iter, void *arg, Transformer trans, TreeTraversi
 	If no callback is given, the traversion order is irrelevant.
 */
 
-void *map_add(Map *map, void *dat, Comparator cmp, Transformer trans);
+bool map_add(Map *map, void *dat, Comparator cmp, Transformer trans);
 /*
 	[Thread Safe]
 	Add an element to the map.
 
-	If an equal element is already in the tree, return it and don't add anything.
-	Otherwise, return added element.
+	If an equal element is already in the map, don't add anything.
+	Return whether an element has been added.
 */
 
 void *map_get(Map *map, void *key, Comparator cmp, Transformer trans);
@@ -67,10 +67,11 @@ void *map_get(Map *map, void *key, Comparator cmp, Transformer trans);
 	Get an element from the map, or return NULL if none found.
 */
 
-void *map_del(Map *map, void *key, Comparator cmp, Transformer trans);
+bool map_del(Map *map, void *key, Comparator cmp, Callback call);
 /*
 	[Thread Safe]
-	Delete an element from the map and return it, or NULL if none found.
+	Delete an element from the map if it is found.
+	Return whether an element has been deleted.
 */
 
 void map_trv(Map *map, Iterator iter, void *arg, Transformer trans, TreeTraversionOrder order);

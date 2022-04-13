@@ -8,7 +8,8 @@
 #ifndef _DRAGONSTD_LIST_H_ // include guard
 #define _DRAGONSTD_LIST_H_
 
-#include "bits/callback.h" // for Iterator, Comparator
+#include <stdbool.h>       // for bool
+#include "bits/callback.h" // for Iterator, Comparator, Transformer, Callback
 #include "bits/compare.h"  // for cmp_ref (not used in file)
 
 #define LIST_ITERATE(list, node) for (ListNode *node = (list)->fst; node != NULL; node = node->nxt)
@@ -34,12 +35,12 @@ void list_ini(List *list);
 	This function should be called before any other function is called on the list.
 */
 
-void *list_add(List *list, void *dat, Comparator cmp, Transformer trans);
+bool list_add(List *list, void *dat, Comparator cmp, Transformer trans);
 /*
 	Add an element to the list.
 
-	If an equal element is already on the list, return it and don't add anything.
-	Otherwise, return added element.
+	If an equal element is already in the list, don't add anything.
+	Return whether an element has been added.
 */
 
 void *list_get(List *list, void *key, Comparator cmp, Transformer trans);
@@ -49,12 +50,12 @@ void *list_get(List *list, void *key, Comparator cmp, Transformer trans);
 	The first matching element is returned, or NULL if none found.
 */
 
-void *list_del(List *list, void *key, Comparator cmp, Transformer trans);
+bool list_del(List *list, void *key, Comparator cmp, Callback call);
 /*
-	Delete an element from the list.
+	Delete an element from the list if it is found.
+	Return whether an element has been deleted.
 
-	The first matching element is returned (after being removed from the list), or NULL
-		if none found.
+	The first matching element is deleted.
 */
 
 void list_apd(List *list, void *dat);

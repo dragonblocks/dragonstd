@@ -16,11 +16,10 @@ typedef struct {
 	Refcount rc;
 } DataObject;
 
-void *data_object_delete(DataObject *obj)
+void data_object_delete(DataObject *obj)
 {
 	refcount_dst(&obj->rc);
 	free(obj);
-	return obj;
 }
 
 int rand_id()
@@ -50,7 +49,7 @@ static void *thread_create(unsigned int *result)
 
 		refcount_ini(&obj->rc, obj, (void *) &data_object_delete);
 
-		if (map_add(&map, &obj->rc, &data_object_compare, &refcount_inc) == &obj->rc)
+		if (map_add(&map, &obj->rc, &data_object_compare, &refcount_inc))
 			(*result)++;
 
 		refcount_drp(&obj->rc);

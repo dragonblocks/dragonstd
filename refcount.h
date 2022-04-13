@@ -14,17 +14,17 @@
 #define _DRAGONSTD_REFCOUNT_H_
 
 #include <pthread.h>       // for pthread_mutex_t
-#include "bits/callback.h" // for Transformer
+#include "bits/callback.h" // for Callback
 
 typedef struct {
 	/* private */
 	void *obj;
-	Transformer del;
+	Callback del;
 	unsigned short cnt;  // counter
 	pthread_mutex_t mtx; // lock to protect count
 } Refcount;
 
-void refcount_ini(Refcount *refcount, void *obj, Transformer del);
+void refcount_ini(Refcount *refcount, void *obj, Callback del);
 /*
 	Initializes the refcount.
 
@@ -60,7 +60,7 @@ void *refcount_grb(void *refcount);
 		refcount.
 */
 
-void *refcount_drp(void *refcount);
+void refcount_drp(void *refcount);
 /*
 	[Thread Safe]
 	Drop a reference to the object.
@@ -68,8 +68,6 @@ void *refcount_drp(void *refcount);
 		convenient to use the function as callback.
 
 	May delete the object using the del function if the counter gets down to zero.
-	Returns the return value of the del function if it has been called; returns the object
-		otherwise.
 */
 
 void *refcount_obj(void *refcount);

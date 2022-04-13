@@ -38,10 +38,10 @@ int main()
 	int e = 3;
 
 	printf("testing add\n");
-	assert(tree_add(&tree, &a, &cmp_int, NULL) == &a);
-	assert(tree_add(&tree, &b, &cmp_int, NULL) == &b);
-	assert(tree_add(&tree, &c, &cmp_int, NULL) == &c);
-	assert(tree_add(&tree, &d, &cmp_int, NULL) == &c);
+	assert(tree_add(&tree, &a, &cmp_int, NULL));
+	assert(tree_add(&tree, &b, &cmp_int, NULL));
+	assert(tree_add(&tree, &c, &cmp_int, NULL));
+	assert(!tree_add(&tree, &d, &cmp_int, NULL));
 
 	printf("testing get\n");
 	assert(tree_get(&tree, &a, &cmp_int, NULL) == &a);
@@ -51,7 +51,7 @@ int main()
 	assert(tree_get(&tree, &e, &cmp_int, NULL) == NULL);
 
 	printf("testing del\n");
-	assert(tree_del(&tree, &a, &cmp_int, NULL) == &a);
+	assert(tree_del(&tree, &a, &cmp_int, NULL));
 	assert(tree_get(&tree, &a, &cmp_int, NULL) == NULL);
 
 	printf("testing clr\n");
@@ -63,7 +63,7 @@ int main()
 		int *n = malloc(sizeof *n);
 		*n = rand();
 
-		if (tree_add(&tree, n, &cmp_int, NULL) != n)
+		if (!tree_add(&tree, n, &cmp_int, NULL))
 			free(n);
 	}
 

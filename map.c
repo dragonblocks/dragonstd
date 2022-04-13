@@ -45,20 +45,20 @@ void map_cnl(Map *map, Iterator iter, void *arg, Transformer trans, TreeTraversi
 	pthread_rwlock_unlock(&map->tlk);
 }
 
-#define WRAP_TREE_FUNC(name, write) \
-	void *map_ ## name(Map *map, void *dat, Comparator cmp, Transformer trans) \
+#define WRAP_TREE_FUNC(type, name, write, CallbackType, null) \
+	type map_ ## name(Map *map, void *dat, Comparator cmp, CallbackType func) \
 	{ \
 		if (! get_lock(map, write)) \
-			return NULL; \
+			return null; \
  \
-		dat = tree_ ## name(&map->tre, dat, cmp, trans); \
+		type ret = tree_ ## name(&map->tre, dat, cmp, func); \
 		pthread_rwlock_unlock(&map->tlk); \
-		return dat; \
+		return ret; \
 	}
 
-WRAP_TREE_FUNC(add, true)
-WRAP_TREE_FUNC(get, false)
-WRAP_TREE_FUNC(del, true)
+WRAP_TREE_FUNC(bool,   add, true,  Transformer, false)
+WRAP_TREE_FUNC(void *, get, false, Transformer, NULL)
+WRAP_TREE_FUNC(bool,   del, true,  Callback,    false)
 
 void map_trv(Map *map, Iterator iter, void *arg, Transformer trans, TreeTraversionOrder order)
 {

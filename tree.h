@@ -14,7 +14,8 @@
 #ifndef _DRAGONSTD_TREE_H_ // include guard
 #define _DRAGONSTD_TREE_H_
 
-#include "bits/callback.h" // for Iterator, Comparator
+#include <stdbool.h>       // for bool
+#include "bits/callback.h" // for Iterator, Comparator, Transformer, Callback
 #include "bits/compare.h"  // for cmp_ref (not used in file)
 
 typedef struct TreeNode {
@@ -44,12 +45,12 @@ void tree_ini(Tree *tree);
 	This function should be called before any other function is called on the tree.
 */
 
-void *tree_add(Tree *tree, void *dat, Comparator cmp, Transformer trans);
+bool tree_add(Tree *tree, void *dat, Comparator cmp, Transformer trans);
 /*
 	Add an element to the tree.
 
-	If an equal element is already in the tree, return it and don't add anything.
-	Otherwise, return added element.
+	If an equal element is already in the tree, don't add anything.
+	Return whether an element has been added.
 */
 
 void *tree_get(Tree *tree, void *key, Comparator cmp, Transformer trans);
@@ -57,9 +58,10 @@ void *tree_get(Tree *tree, void *key, Comparator cmp, Transformer trans);
 	Get an element from the tree, or return NULL if none found.
 */
 
-void *tree_del(Tree *tree, void *key, Comparator cmp, Transformer trans);
+bool tree_del(Tree *tree, void *key, Comparator cmp, Callback call);
 /*
-	Delete an element from the tree and return it, or NULL if none found.
+	Delete an element from the tree if it is found.
+	Return whether an element has been deleted.
 */
 
 TreeNode **tree_nfd(Tree *tree, void *key, Comparator cmp);
