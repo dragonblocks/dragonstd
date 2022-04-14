@@ -1,6 +1,7 @@
+#include "bits/callback.h" // for SingleCallback
 #include "refcount.h"
 
-void refcount_ini(Refcount *refcount, void *obj, SingleCallback del)
+void refcount_ini(Refcount *refcount, void *obj, void *del)
 {
 	refcount->obj = obj;
 	refcount->del = del;
@@ -33,7 +34,7 @@ void refcount_drp(Refcount *refcount)
 	pthread_mutex_unlock(&refcount->mtx);
 
 	if (!count)
-		refcount->del(refcount->obj);
+		((SingleCallback) refcount->del)(refcount->obj);
 }
 
 void *refcount_obj(Refcount *refcount)

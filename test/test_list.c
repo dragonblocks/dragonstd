@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include "../list.h"
 
-int cmp_int(const void *ia, const void *ib)
+int cmp_int(const int *ia, const int *ib)
 {
-	return *(const int *) ia - *(const int *) ib;
+	return *ia - *ib;
 }
 
 int main()

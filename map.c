@@ -1,3 +1,4 @@
+#include "bits/callback.h" // for Transformer
 #include "map.h"
 
 static bool get_lock(Map *map, bool write)
@@ -32,7 +33,7 @@ void map_dst(Map *map)
 	pthread_rwlock_destroy(&map->clk);
 }
 
-void map_cnl(Map *map, Callback iter, void *arg, Transformer trans, TreeTraversionOrder order)
+void map_cnl(Map *map, void *iter, void *arg, void *trans, TreeTraversionOrder order)
 {
 	pthread_rwlock_wrlock(&map->clk);
 	map->cnl = true;
@@ -45,7 +46,7 @@ void map_cnl(Map *map, Callback iter, void *arg, Transformer trans, TreeTraversi
 	pthread_rwlock_unlock(&map->tlk);
 }
 
-bool map_add(Map *map, void *dat, Comparator cmp, Transformer trans)
+bool map_add(Map *map, void *dat, void *cmp, void *trans)
 {
 	if (!get_lock(map, true))
 		return false;
@@ -55,7 +56,7 @@ bool map_add(Map *map, void *dat, Comparator cmp, Transformer trans)
 	return ret;
 }
 
-void *map_get(Map *map, void *key, Comparator cmp, Transformer trans)
+void *map_get(Map *map, void *key, void *cmp, void *trans)
 {
 	if (!get_lock(map, false))
 		return NULL;
@@ -65,7 +66,7 @@ void *map_get(Map *map, void *key, Comparator cmp, Transformer trans)
 	return ret;
 }
 
-bool map_del(Map *map, void *key, Comparator cmp, Callback call, void *arg, Transformer trans)
+bool map_del(Map *map, void *key, void *cmp, void *call, void *arg, void *trans)
 {
 	if (!get_lock(map, true))
 		return false;
@@ -75,7 +76,7 @@ bool map_del(Map *map, void *key, Comparator cmp, Callback call, void *arg, Tran
 	return ret;
 }
 
-void map_trv(Map *map, Callback iter, void *arg, Transformer trans, TreeTraversionOrder order)
+void map_trv(Map *map, void *iter, void *arg, void *trans, TreeTraversionOrder order)
 {
 	if (!get_lock(map, false))
 		return;

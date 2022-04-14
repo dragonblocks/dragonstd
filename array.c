@@ -1,6 +1,7 @@
-#include <stdlib.h> // for malloc, realloc, free, qsort
-#include <string.h> // for memmove, memcpy
+#include <stdlib.h>        // for malloc, realloc, free, qsort
+#include <string.h>        // for memmove, memcpy
 #include "array.h"
+#include "bits/callback.h" // for Comparator
 
 void array_ini(Array *array, size_t mbs, size_t ext)
 {
@@ -81,12 +82,12 @@ void array_clr(Array *array)
 	array_ini(array, array->mbs, array->ext);
 }
 
-void array_srt(Array *array, Comparator cmp)
+void array_srt(Array *array, void *cmp)
 {
 	qsort(array->ptr, array->siz, array->mbs, cmp);
 }
 
-ssize_t array_fnd(Array *array, const void *ptr, size_t *idx, Comparator cmp)
+ssize_t array_fnd(Array *array, const void *ptr, size_t *idx, void *cmp)
 {
 	size_t low, high, mid;
 
@@ -96,7 +97,7 @@ ssize_t array_fnd(Array *array, const void *ptr, size_t *idx, Comparator cmp)
 	while (low < high) {
 		mid = (low + high) / 2;
 
-		int rel = cmp(ptr, array->ptr + mid * array->mbs);
+		int rel = ((Comparator) cmp)(ptr, array->ptr + mid * array->mbs);
 
 		if (rel == 0)
 			return idx ? (*idx = mid) : mid;
@@ -112,7 +113,7 @@ ssize_t array_fnd(Array *array, const void *ptr, size_t *idx, Comparator cmp)
 	return -1;
 }
 
-size_t array_ins(Array *array, const void *ptr, Comparator cmp)
+size_t array_ins(Array *array, const void *ptr, void *cmp)
 {
 	size_t n;
 

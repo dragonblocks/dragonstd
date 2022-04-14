@@ -14,17 +14,16 @@
 #define _DRAGONSTD_REFCOUNT_H_
 
 #include <pthread.h>       // for pthread_mutex_t
-#include "bits/callback.h" // for Callback
 
 typedef struct {
 	/* private */
 	void *obj;
-	SingleCallback del;
+	void *del;
 	unsigned short cnt;  // counter
 	pthread_mutex_t mtx; // lock to protect count
 } Refcount;
 
-void refcount_ini(Refcount *refcount, void *obj, SingleCallback del);
+void refcount_ini(Refcount *refcount, void *obj, void *del);
 /*
 	Initializes the refcount.
 

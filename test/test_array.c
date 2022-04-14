@@ -114,14 +114,14 @@ int main()
 	assert(arr.cap == 8);
 
 	printf("testing srt\n");
-	array_srt(&arr, (void *) &cmp_int);
+	array_srt(&arr, &cmp_int);
 
 	printf("testing order: exp: (sorted) got: "); dump(&arr); printf("\n");
 	assert_in_order(&arr);
 
 	for (size_t j = 0; j < arr.siz; j++) {
 		i = ((int *) arr.ptr)[j];
-		ssize_t s = array_fnd(&arr, &i, NULL, (void *) &cmp_int);
+		ssize_t s = array_fnd(&arr, &i, NULL, &cmp_int);
 
 		printf("testing fnd at index %lu: exp: >=0 got: %ld\n", j, s);
 		assert(s >= 0);
@@ -134,7 +134,7 @@ int main()
 
 	printf("testing ins\n");
 	for (int j = 0; j < 10; j++) {
-		i = rand() % 100; array_ins(&arr, &i, (void *) &cmp_int);
+		i = rand() % 100; array_ins(&arr, &i, &cmp_int);
 	}
 
 	printf("testing order: exp: (sorted) got: "); dump(&arr); printf("\n");

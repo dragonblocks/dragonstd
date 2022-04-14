@@ -11,7 +11,6 @@
 
 #include <pthread.h>       // for pthread_cond_t, pthread_mutex_t
 #include <stdbool.h>       // for bool
-#include "bits/callback.h" // for Transformer
 #include "list.h"          // for List
 
 typedef struct {
@@ -40,7 +39,7 @@ void queue_dst(Queue *queue);
 		list is cleared before calling this function.
 */
 
-void queue_clr(Queue *queue, Callback iter, void *arg, Transformer trans);
+void queue_clr(Queue *queue, void *iter, void *arg, void  *trans);
 /*
 	Clears the queue.
 
@@ -58,7 +57,7 @@ bool queue_enq(Queue *queue, void *dat);
 	Notifies waiting consumer threads.
 */
 
-void *queue_deq(Queue *queue, Transformer trans);
+void *queue_deq(Queue *queue, void *trans);
 /*
 	[Thread Safe]
 	Dequeue an element.

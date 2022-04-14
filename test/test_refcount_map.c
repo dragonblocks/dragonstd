@@ -16,29 +16,25 @@ typedef struct {
 	Refcount rc;
 } DataObject;
 
-void data_object_delete(DataObject *obj)
-{
-	refcount_dst(&obj->rc);
-	free(obj);
-}
-
 int rand_id()
 {
 	return rand() % 1000;
 }
 
-int data_object_compare(const void *pa, const void *pb)
+void delete_obj(DataObject *obj)
 {
-	return
-		((DataObject *) ((const Refcount *) pa)->obj)->id -
-		((DataObject *) ((const Refcount *) pb)->obj)->id;
+	refcount_dst(&obj->rc);
+	free(obj);
 }
 
-int data_object_compare_id(const void *pa, const void *pb)
+int cmp_obj(const Refcount *rc, const int *id)
 {
-	return
-		((DataObject *) ((const Refcount *) pa)->obj)->id -
-		*(const int *) pb;
+	return ((DataObject *) rc->obj)->id - *id;
+}
+
+int cmp_obj_sym(const Refcount *rc1, const Refcount *rc2)
+{
+	return cmp_obj(rc1, &((DataObject *) rc2->obj)->id);
 }
 
 static void *thread_create(unsigned int *result)
@@ -47,9 +43,9 @@ static void *thread_create(unsigned int *result)
 		DataObject *obj = malloc(sizeof *obj);
 		obj->id = rand_id();
 
-		refcount_ini(&obj->rc, obj, (void *) &data_object_delete);
+		refcount_ini(&obj->rc, obj, &delete_obj);
 
-		if (map_add(&map, &obj->rc, &data_object_compare, (void *) &refcount_inc))
+		if (map_add(&map, &obj->rc, &cmp_obj_sym, &refcount_inc))
 			(*result)++;
 
 		refcount_drp(&obj->rc);
@@ -74,7 +70,7 @@ static void *thread_access(unsigned int *result)
 
 		while (!objs[i] && !cancel) {
 			int id = rand_id();
-			objs[i] = map_get(&map, &id, &data_object_compare_id, (void *) &refcount_grb);
+			objs[i] = map_get(&map, &id, &cmp_obj, &refcount_grb);
 		}
 
 		if (objs[i])
@@ -95,7 +91,7 @@ static void *thread_delete(unsigned int *result)
 	while (!cancel) {
 		unsigned int id = rand_id();
 
-		if (map_del(&map, &id, &data_object_compare_id, (void *) &refcount_drp, NULL, NULL))
+		if (map_del(&map, &id, &cmp_obj, &refcount_drp, NULL, NULL))
 			(*result)++;
 	}
 
@@ -136,7 +132,7 @@ int main()
 				results[i][0] += results[i][j];
 		}
 
-	map_cnl(&map, (void *) &refcount_drp, NULL, NULL, 0);
+	map_cnl(&map, &refcount_drp, NULL, NULL, 0);
 	map_dst(&map);
 
 	printf("Time: 1 second\n");

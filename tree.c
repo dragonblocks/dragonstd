@@ -1,4 +1,5 @@
 #include <stdlib.h>  // for malloc, free
+#include "bits/callback.h" // for Callback, Comparator, Transformer
 #include "bits/wrappers.h"
 #include "tree.h"
 
@@ -39,7 +40,7 @@ void tree_ini(Tree *tree)
 
 WRAP_NODE_FUNCTIONS(Tree, tree_)
 
-TreeNode **tree_nfd(Tree *tree, void *key, Comparator cmp)
+TreeNode **tree_nfd(Tree *tree, void *key, void *cmp)
 {
 	return search(&tree->rot, key, cmp);
 }
@@ -68,12 +69,12 @@ void tree_nrm(__attribute__((unused)) Tree *tree, TreeNode **node)
 	free(old);
 }
 
-void tree_trv(Tree *tree, Callback iter, void *arg, Transformer trans, TreeTraversionOrder order)
+void tree_trv(Tree *tree, void *iter, void *arg, void *trans, TreeTraversionOrder order)
 {
 	traverse(tree->rot, iter, arg, trans, order, 0);
 }
 
-void tree_clr(Tree *tree, Callback iter, void *arg, Transformer trans, TreeTraversionOrder order)
+void tree_clr(Tree *tree, void *iter, void *arg, void *trans, TreeTraversionOrder order)
 {
 	traverse(tree->rot, iter, arg, trans, order, 1);
 	tree_ini(tree);

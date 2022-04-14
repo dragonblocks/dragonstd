@@ -1,4 +1,5 @@
-#include <sched.h>
+#include <sched.h>         // for sched_yield
+#include "bits/callback.h" // for Transformer
 #include "queue.h"
 
 void queue_ini(Queue *queue)
@@ -15,7 +16,7 @@ void queue_dst(Queue *queue)
 	pthread_mutex_destroy(&queue->mtx);
 }
 
-void queue_clr(Queue *queue, Callback iter, void *arg, Transformer trans)
+void queue_clr(Queue *queue, void *iter, void *arg, void *trans)
 {
 	list_clr(&queue->lst, iter, arg, trans);
 }
@@ -35,7 +36,7 @@ bool queue_enq(Queue *queue, void *dat)
 	return success;
 }
 
-void *queue_deq(Queue *queue, Transformer trans)
+void *queue_deq(Queue *queue, void *trans)
 {
 	void *dat = NULL;
 
@@ -47,7 +48,7 @@ void *queue_deq(Queue *queue, Transformer trans)
 			list_nrm(&queue->lst, node);
 
 			if (trans)
-				dat = trans(dat);
+				dat = ((Transformer) trans)(dat);
 		} else {
 			pthread_cond_wait(&queue->cnd, &queue->mtx);
 		}

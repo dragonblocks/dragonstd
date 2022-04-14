@@ -6,9 +6,9 @@
 
 #define NUM_ELEMENTS 1e5
 
-int cmp_int(const void *ia, const void *ib)
+int cmp_int(const int *ia, const int *ib)
 {
-	return *(const int *) ia - *(const int *) ib;
+	return *ia - *ib;
 }
 
 void clear_callback(int *ia, int *ib)
@@ -68,5 +68,5 @@ int main()
 	}
 
 	int last = -1;
-	tree_clr(&tree, (void *) &clear_callback, &last, NULL, TRAVERSION_INORDER);
+	tree_clr(&tree, &clear_callback, &last, NULL, TRAVERSION_INORDER);
 }

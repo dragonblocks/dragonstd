@@ -9,7 +9,6 @@
 #define _DRAGONSTD_LIST_H_
 
 #include <stdbool.h>       // for bool
-#include "bits/callback.h" // for Callback, Comparator, Transformer, Callback
 #include "bits/compare.h"  // for cmp_ref (not used in file)
 
 #define LIST_ITERATE(list, node) for (ListNode *node = (list)->fst; node != NULL; node = node->nxt)
@@ -35,7 +34,7 @@ void list_ini(List *list);
 	This function should be called before any other function is called on the list.
 */
 
-bool list_add(List *list, void *dat, Comparator cmp, Transformer trans);
+bool list_add(List *list, void *dat, void *cmp, void *trans);
 /*
 	Add an element to the list.
 
@@ -43,14 +42,14 @@ bool list_add(List *list, void *dat, Comparator cmp, Transformer trans);
 	Return whether an element has been added.
 */
 
-void *list_get(List *list, void *key, Comparator cmp, Transformer trans);
+void *list_get(List *list, void *key, void *cmp, void *trans);
 /*
 	Get an element from the list.
 
 	The first matching element is returned, or NULL if none found.
 */
 
-bool list_del(List *list, void *key, Comparator cmp, Callback call, void *arg, Transformer trans);
+bool list_del(List *list, void *key, void *cmp, void *call, void *arg, void *trans);
 /*
 	Delete an element from the list if it is found.
 	Return whether an element has been deleted.
@@ -68,7 +67,7 @@ void list_ppd(List *list, void *dat);
 	Prepend an element at the start of the list.
 */
 
-ListNode **list_nfd(List *list, void *key, Comparator cmp);
+ListNode **list_nfd(List *list, void *key, void *cmp);
 /*
 	Find the location of the first node matching key.
 
@@ -86,7 +85,7 @@ void list_nrm(List *list, ListNode **node);
 	Remove the node at the given location.
 */
 
-void list_itr(List *list, Callback iter, void *arg, Transformer trans);
+void list_itr(List *list, void *iter, void *arg, void *trans);
 /*
 	Iterate over the list.
 	Calls iter on every element, with the extra argument arg.
@@ -94,7 +93,7 @@ void list_itr(List *list, Callback iter, void *arg, Transformer trans);
 	Note: the LIST_ITERATE macro can be used to do this without function calls.
 */
 
-void list_clr(List *list, Callback iter, void *arg, Transformer trans);
+void list_clr(List *list, void *iter, void *arg, void *trans);
 /*
 	Iterates over the list and deletes all elements.
 	Calls iter on every element, with the extra argument arg.

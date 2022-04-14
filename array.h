@@ -12,7 +12,6 @@
 
 #include <stddef.h>        // for size_t
 #include <sys/types.h>     // for ssize_t
-#include "bits/callback.h" // for Comparator
 #include "bits/compare.h"  // for cmp_ref (not used in file)
 
 typedef struct {
@@ -139,7 +138,7 @@ void array_clr(Array *array);
 	After this, the array is empty and can be reused.
 */
 
-void array_srt(Array *array, Comparator cmp);
+void array_srt(Array *array, void *cmp);
 /*
 	Sorts the array using the quicksort algorithm.
 
@@ -147,7 +146,7 @@ void array_srt(Array *array, Comparator cmp);
 	Wraps the qsort C-library routine. Please refer to it's documentation.
 */
 
-ssize_t array_fnd(Array *array, const void *ptr, size_t *idx, Comparator cmp);
+ssize_t array_fnd(Array *array, const void *ptr, size_t *idx, void *cmp);
 /*
 	Searches the sorted array for the element ptr.
 	Returns the index of the element, or -1 if it wasn't found.
@@ -159,7 +158,7 @@ ssize_t array_fnd(Array *array, const void *ptr, size_t *idx, Comparator cmp);
 		and the order has been kept and the same comparator is used.
 */
 
-size_t array_ins(Array *array, const void *ptr, Comparator cmp);
+size_t array_ins(Array *array, const void *ptr, void *cmp);
 /*
 	Inserts an element into a sorted array, keeping the order.
 	Returns the index the element has been inserted at.

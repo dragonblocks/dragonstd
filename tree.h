@@ -15,7 +15,6 @@
 #define _DRAGONSTD_TREE_H_
 
 #include <stdbool.h>       // for bool
-#include "bits/callback.h" // for Callback, Comparator, Transformer, Callback
 #include "bits/compare.h"  // for cmp_ref (not used in file)
 
 typedef struct TreeNode {
@@ -45,7 +44,7 @@ void tree_ini(Tree *tree);
 	This function should be called before any other function is called on the tree.
 */
 
-bool tree_add(Tree *tree, void *dat, Comparator cmp, Transformer trans);
+bool tree_add(Tree *tree, void *dat, void *cmp, void *trans);
 /*
 	Add an element to the tree.
 
@@ -53,18 +52,18 @@ bool tree_add(Tree *tree, void *dat, Comparator cmp, Transformer trans);
 	Return whether an element has been added.
 */
 
-void *tree_get(Tree *tree, void *key, Comparator cmp, Transformer trans);
+void *tree_get(Tree *tree, void *key, void *cmp, void *trans);
 /*
 	Get an element from the tree, or return NULL if none found.
 */
 
-bool tree_del(Tree *tree, void *key, Comparator cmp, Callback call, void *arg, Transformer trans);
+bool tree_del(Tree *tree, void *key, void *cmp, void *call, void *arg, void *trans);
 /*
 	Delete an element from the tree if it is found.
 	Return whether an element has been deleted.
 */
 
-TreeNode **tree_nfd(Tree *tree, void *key, Comparator cmp);
+TreeNode **tree_nfd(Tree *tree, void *key, void *cmp);
 /*
 	Find the location of a node matching key.
 
@@ -82,13 +81,13 @@ void tree_nrm(Tree *tree, TreeNode **node);
 	Remove the node at the given location.
 */
 
-void tree_trv(Tree *tree, Callback iter, void *arg, Transformer trans, TreeTraversionOrder order);
+void tree_trv(Tree *tree, void *iter, void *arg, void *trans, TreeTraversionOrder order);
 /*
 	Traverse the tree.
 	Calls iter on every element, with the extra argument arg.
 */
 
-void tree_clr(Tree *tree, Callback iter, void *arg, Transformer trans, TreeTraversionOrder order);
+void tree_clr(Tree *tree, void *iter, void *arg, void *trans, TreeTraversionOrder order);
 /*
 	Traverses the tree and deletes all elements.
 	Calls iter on every element, with the extra argument arg.

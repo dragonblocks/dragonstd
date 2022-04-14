@@ -11,7 +11,6 @@
 
 #include <stdbool.h>       // for bool
 #include <pthread.h>       // for pthread_rwlock_t
-#include "bits/callback.h" // for Transformer, Comparator, Callback
 #include "tree.h"          // for Tree
 
 typedef struct {
@@ -38,7 +37,7 @@ void map_dst(Map *map);
 	Make sure to cancel the map before destroying it, to avoid memory leaks.
 */
 
-void map_cnl(Map *map, Callback iter, void *arg, Transformer trans, TreeTraversionOrder order);
+void map_cnl(Map *map, void *iter, void *arg, void *trans, TreeTraversionOrder order);
 /*
 	[Thread Safe]
 	Cancels and clears the map.
@@ -52,7 +51,7 @@ void map_cnl(Map *map, Callback iter, void *arg, Transformer trans, TreeTraversi
 	If no callback is given, the traversion order is irrelevant.
 */
 
-bool map_add(Map *map, void *dat, Comparator cmp, Transformer trans);
+bool map_add(Map *map, void *dat, void *cmp, void *trans);
 /*
 	[Thread Safe]
 	Add an element to the map.
@@ -61,20 +60,20 @@ bool map_add(Map *map, void *dat, Comparator cmp, Transformer trans);
 	Return whether an element has been added.
 */
 
-void *map_get(Map *map, void *key, Comparator cmp, Transformer trans);
+void *map_get(Map *map, void *key, void *cmp, void *trans);
 /*
 	[Thread Safe]
 	Get an element from the map, or return NULL if none found.
 */
 
-bool map_del(Map *map, void *key, Comparator cmp, Callback call, void *arg, Transformer trans);
+bool map_del(Map *map, void *key, void *cmp, void *call, void *arg, void *trans);
 /*
 	[Thread Safe]
 	Delete an element from the map if it is found.
 	Return whether an element has been deleted.
 */
 
-void map_trv(Map *map, Callback iter, void *arg, Transformer trans, TreeTraversionOrder order);
+void map_trv(Map *map, void *iter, void *arg, void *trans, TreeTraversionOrder order);
 /*
 	[Thread Safe]
 	Traverse the map.

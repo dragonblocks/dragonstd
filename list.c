@@ -1,5 +1,6 @@
-#include <stdlib.h> // for malloc, free
-#include <string.h> // for strcmp
+#include <stdlib.h>        // for malloc, free
+#include <string.h>        // for strcmp
+#include "bits/callback.h" // for Callback, Comparator, Transformer
 #include "bits/wrappers.h"
 #include "list.h"
 
@@ -25,12 +26,12 @@ void list_ppd(List *list, void *dat)
 	list->fst->nxt = fst;
 }
 
-ListNode **list_nfd(List *list, void *key, Comparator cmp)
+ListNode **list_nfd(List *list, void *key, void *cmp)
 {
 	ListNode **node;
 
 	for (ITER_REFS)
-		if (cmp((*node)->dat, key) == 0)
+		if (((Comparator) cmp)((*node)->dat, key) == 0)
 			return node;
 
 	return node;
@@ -57,19 +58,19 @@ void list_nrm(List *list, ListNode **node)
 	free(old);
 }
 
-void list_itr(List *list, Callback iter, void *arg, Transformer trans)
+void list_itr(List *list, void *iter, void *arg, void *trans)
 {
 	LIST_ITERATE(list, node)
-		iter(trans ? trans(node->dat) : node->dat, arg);
+		((Callback) iter)(trans ? ((Transformer) trans)(node->dat) : node->dat, arg);
 }
 
-void list_clr(List *list, Callback iter, void *arg, Transformer trans)
+void list_clr(List *list, void *iter, void *arg, void *trans)
 {
 	for (ListNode *node = list->fst; node != NULL;) {
 		ListNode *next = node->nxt;
 
 		if (iter)
-			iter(trans ? trans(node->dat) : node->dat, arg);
+			((Callback) iter)(trans ? ((Transformer) trans)(node->dat) : node->dat, arg);
 
 		free(node);
 		node = next;
