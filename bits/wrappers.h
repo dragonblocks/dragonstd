@@ -1,9 +1,9 @@
 #include "callback.h" // for Transformer, Callback
 
 #define WRAP_NODE_FUNCTIONS(Type, prefix) \
-	bool prefix ## add(Type *self, void *dat, void *cmp, void *trans) \
+	bool prefix ## add(Type *self, void *key, void *dat, void *cmp, void *trans) \
 	{ \
-		Type ## Node **node = prefix ## nfd(self, dat, cmp); \
+		Type ## Node **node = prefix ## nfd(self, key, cmp); \
  \
 		if (*node) \
 			return false; \

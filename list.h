@@ -34,7 +34,7 @@ void list_ini(List *list);
 	This function should be called before any other function is called on the list.
 */
 
-bool list_add(List *list, void *dat, void *cmp, void *trans);
+bool list_add(List *list, void *key, void *dat, void *cmp, void *trans);
 /*
 	Add an element to the list.
 

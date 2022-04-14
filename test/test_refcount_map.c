@@ -32,11 +32,6 @@ int cmp_obj(const Refcount *rc, const int *id)
 	return ((DataObject *) rc->obj)->id - *id;
 }
 
-int cmp_obj_sym(const Refcount *rc1, const Refcount *rc2)
-{
-	return cmp_obj(rc1, &((DataObject *) rc2->obj)->id);
-}
-
 static void *thread_create(unsigned int *result)
 {
 	while (!cancel) {
@@ -45,7 +40,7 @@ static void *thread_create(unsigned int *result)
 
 		refcount_ini(&obj->rc, obj, &delete_obj);
 
-		if (map_add(&map, &obj->rc, &cmp_obj_sym, &refcount_inc))
+		if (map_add(&map, &obj->id, &obj->rc, &cmp_obj, &refcount_inc))
 			(*result)++;
 
 		refcount_drp(&obj->rc);

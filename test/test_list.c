@@ -25,10 +25,10 @@ int main()
 	int e = 3;
 
 	printf("testing add\n");
-	assert(list_add(&list, &a, &cmp_int, NULL));
-	assert(list_add(&list, &b, &cmp_int, NULL));
-	assert(list_add(&list, &c, &cmp_int, NULL));
-	assert(!list_add(&list, &d, &cmp_int, NULL));
+	assert(list_add(&list, &a, &a, &cmp_int, NULL));
+	assert(list_add(&list, &b, &b, &cmp_int, NULL));
+	assert(list_add(&list, &c, &c, &cmp_int, NULL));
+	assert(!list_add(&list, &d, &d, &cmp_int, NULL));
 
 	printf("testing get\n");
 	assert(list_get(&list, &a, &cmp_int, NULL) == &a);

@@ -46,12 +46,12 @@ void map_cnl(Map *map, void *iter, void *arg, void *trans, TreeTraversionOrder o
 	pthread_rwlock_unlock(&map->tlk);
 }
 
-bool map_add(Map *map, void *dat, void *cmp, void *trans)
+bool map_add(Map *map, void *key, void *dat, void *cmp, void *trans)
 {
 	if (!get_lock(map, true))
 		return false;
 
-	bool ret = tree_add(&map->tre, dat, cmp, trans);
+	bool ret = tree_add(&map->tre, key, dat, cmp, trans);
 	pthread_rwlock_unlock(&map->tlk);
 	return ret;
 }

@@ -44,7 +44,7 @@ void tree_ini(Tree *tree);
 	This function should be called before any other function is called on the tree.
 */
 
-bool tree_add(Tree *tree, void *dat, void *cmp, void *trans);
+bool tree_add(Tree *tree, void *key, void *dat, void *cmp, void *trans);
 /*
 	Add an element to the tree.
 

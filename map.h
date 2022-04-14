@@ -51,7 +51,7 @@ void map_cnl(Map *map, void *iter, void *arg, void *trans, TreeTraversionOrder o
 	If no callback is given, the traversion order is irrelevant.
 */
 
-bool map_add(Map *map, void *dat, void *cmp, void *trans);
+bool map_add(Map *map, void *key, void *dat, void *cmp, void *trans);
 /*
 	[Thread Safe]
 	Add an element to the map.

@@ -19,7 +19,7 @@ void flag_dst(Flag *flag)
 void flag_sub(Flag *flag, pthread_cond_t *cnd)
 {
 	pthread_mutex_lock(&flag->mtx);
-	list_add(&flag->cvs, cnd, &cmp_ref, NULL);
+	list_add(&flag->cvs, cnd, cnd, &cmp_ref, NULL);
 	pthread_mutex_unlock(&flag->mtx);
 }
 
