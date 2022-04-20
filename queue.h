@@ -57,6 +57,16 @@ bool queue_enq(Queue *queue, void *dat);
 	Notifies waiting consumer threads.
 */
 
+bool queue_ppd(Queue *queue, void *dat);
+/*
+	[Thread Safe]
+	Enqueues an element at the front of the queue.
+	Returns true if the enqueueing was successful (this is always the case if queue_fin
+		has not been called)
+
+	Notifies waiting consumer threads.
+*/
+
 void *queue_deq(Queue *queue, void *trans);
 /*
 	[Thread Safe]

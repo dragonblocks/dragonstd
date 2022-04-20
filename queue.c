@@ -21,20 +21,26 @@ void queue_clr(Queue *queue, void *iter, void *arg, void *trans)
 	list_clr(&queue->lst, iter, arg, trans);
 }
 
-bool queue_enq(Queue *queue, void *dat)
-{
-	bool success = false;
-
-	pthread_mutex_lock(&queue->mtx);
-	if (!queue->fin) {
-		success = true;
-		list_apd(&queue->lst, dat);
-		pthread_cond_signal(&queue->cnd);
+#define ENQUEUE(queue_fun, list_fun) \
+	bool queue_fun(Queue *queue, void *dat) \
+	{ \
+		bool success = false; \
+ \
+		pthread_mutex_lock(&queue->mtx); \
+		if (!queue->fin) { \
+			success = true; \
+			list_fun(&queue->lst, dat); \
+			pthread_cond_signal(&queue->cnd); \
+		} \
+		pthread_mutex_unlock(&queue->mtx); \
+ \
+		return success; \
 	}
-	pthread_mutex_unlock(&queue->mtx);
 
-	return success;
-}
+ENQUEUE(queue_enq, list_apd)
+ENQUEUE(queue_ppd, list_ppd)
+
+#undef ENQUEUE
 
 void *queue_deq(Queue *queue, void *trans)
 {
