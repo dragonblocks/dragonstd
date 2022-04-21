@@ -1,5 +1,5 @@
 #include <stdlib.h>        // for malloc, realloc, free, qsort
-#include <string.h>        // for memmove, memcpy
+#include <string.h>        // for memmove, memcpy, memcmp
 #include "array.h"
 #include "bits/callback.h" // for Comparator
 
@@ -53,6 +53,15 @@ void array_apd(Array *array, const void *ptr)
 	array_grw(array, 1);
 
 	memcpy(array->ptr + oldsiz * array->mbs, ptr, array->mbs);
+}
+
+ssize_t array_idx(Array *array, const void *ptr)
+{
+	for (size_t i = 0; i < array->siz; i++)
+		if (memcmp(array->ptr + i * array->mbs, ptr, array->mbs) == 0)
+			return i;
+
+	return -1;
 }
 
 void array_cpy(Array *array, void **ptr, size_t *n)

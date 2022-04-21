@@ -96,6 +96,13 @@ void array_apd(Array *array, const void *ptr);
 		but it is slightly faster since it saves unnecessary calls.
 */
 
+ssize_t array_idx(Array *array, const void *ptr);
+/*
+	Returns the index of the first element that equals ptr, or none if no matches.
+
+	Uses memcmp to compare the elements.
+*/
+
 void array_cpy(Array *array, void **ptr, size_t *n);
 /*
 	Allocates a buffer big enough to fit the array's used size.
