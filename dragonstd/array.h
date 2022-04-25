@@ -10,9 +10,9 @@
 #ifndef _DRAGONSTD_ARRAY_H_ // include guard
 #define _DRAGONSTD_ARRAY_H_
 
-#include <stddef.h>        // for size_t
-#include <sys/types.h>     // for ssize_t
-#include "bits/compare.h"  // for cmp_ref (not used in file)
+#include <stddef.h>       // for size_t
+#include <sys/types.h>    // for ssize_t
+#include "bits/compare.h" // for cmp_ref (not used in file)
 
 typedef struct {
 	/* public */

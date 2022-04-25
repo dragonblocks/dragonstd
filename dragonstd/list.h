@@ -8,8 +8,8 @@
 #ifndef _DRAGONSTD_LIST_H_ // include guard
 #define _DRAGONSTD_LIST_H_
 
-#include <stdbool.h>       // for bool
-#include "bits/compare.h"  // for cmp_ref (not used in file)
+#include <stdbool.h>      // for bool
+#include "bits/compare.h" // for cmp_ref (not used in file)
 
 #define LIST_ITERATE(list, node) for (ListNode *node = (list)->fst; node != NULL; node = node->nxt)
 
