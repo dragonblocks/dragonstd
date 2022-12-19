@@ -1,4 +1,4 @@
-CC=cc -g -Wall -Wextra -Werror -fmax-errors=1
+CC=cc -g -Wall -Wextra -Werror -fmax-errors=1 -fsanitize=address
 TEST=valgrind --leak-check=full --show-leak-kinds=all --quiet
 
 run: test_array test_list test_tree test_queue test_flag test_refcount_map
