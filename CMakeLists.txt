@@ -4,7 +4,6 @@ project(Dragonstd)
 add_compile_options(
 	-Wall
 	-Wextra
-	-Werror
 )
 
 add_library(dragonstd
