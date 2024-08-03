@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(Dragonstd)
+project(Dragonstd C)
 
 add_compile_options(
 	-Wall
