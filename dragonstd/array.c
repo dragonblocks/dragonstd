@@ -68,8 +68,12 @@ void array_cpy(Array *array, void **ptr, size_t *n)
 {
 	*n = array->siz;
 	size_t size = array->siz * array->mbs;
-	*ptr = malloc(size);
-	memcpy(*ptr, array->ptr, size);
+	if (array->ptr) {
+		*ptr = malloc(size);
+		memcpy(*ptr, array->ptr, size);
+	} else {
+		*ptr = NULL;
+	}
 }
 
 void array_cln(Array *dst, Array *src)
